@@ -1,0 +1,1958 @@
+MODULE 3 — CPT RESPONSE LIFECYCLE
+LESSON 1 — PLANNING AND EXECUTING A HUNT MISSION
+LESSON 2 — CLEAR
+LESSON 3 — ENABLE HARDENING
+LESSON 4 — ASSESS
+LESSON 4 — ASSESS
+
+PLANNING AND EXECUTING A HUNT MISSION
+
+A.	INTRODUCTION
+Threat hunting is one of the four primary functions that a Cyber Protection Team (CPT) must be ready to perform during a mission. Threat hunting is a proactive process to detect and separate Advanced Persistent Threats (APT) that navigate past existing security functions. This is in contrast to established threat-prevention activities like firewalls, Intrusion Detection Systems (IDS), and Security Information and Event Management (SIEM), which are all reactionary rather than proactive.
+This lesson begins with an overview of threat hunting as discussed in the Cyber Warfare Publication (CWP) 3-33.4 before diving into the threat hunting process, which includes collecting data, generating a hunt hypothesis, and executing a hunt. The lesson concludes with hands-on tasks that walk through developing a hypothesis for and executing a realistic hunt scenario.
+Estimated time to complete: 5.0 hours
+
+B.	ENABLING OBJECTIVES
+Upon successful completion of this section, you will be able to:
+3.1.1	IDENTIFY tools and capabilities commonly used when threat hunting
+3.1.2	DISCUSS common processes
+3.1.3	EXPLAIN how CPTs function when threat hunting
+3.1.4	EXPLAIN tactical planning process
+3.1.5	CREATE a viable mission plan
+3.1.6	EXPLAIN mission execution process
+3.1.7	EXECUTE a mission plan
+3.1.8	EXECUTE mission assessment function
+
+C.	TOPIC OUTLINE
+•	CPT hunt operations
+•	Tactical planning for hunt operations
+•	Data collection for hunt operations
+•	Threat hunting overview
+•	Threat hunting process
+•	Hunt execution
+ 
+D.	TOOLKIT
+
+Elastic Stack
+
+Elastic Stack is a group of open-source products from Elastic designed to help users take data from any type of source — and in any format — and search, analyze, and visualize that data in real time.
+Kibana
+
+Kibana is a web-based User Interface (UI) to Elasticsearch data. In a Security Onion distribution, this is the most user-friendly method of navigating the numerous security logs collected into the monitoring tool’s Elastic Stack.
+MITRE ATT&CK®
+
+MITRE Adversarial Tactics, Techniques, and Common Knowledge (ATT&CK) is a knowledge base for cyber adversary behavior. It covers the multiple phases of an adversary's attack lifecycle and the systems they typically target.
+ 
+INFORMATION SHEET 3-1
+
+LESSON 1 — PLANNING AND EXECUTING A HUNT MISSION
+
+
+CWP and CPT Threat Hunting
+Threat hunting — also known as cyber threat hunting or hunting — is one of the four core functions of a CPT. Chapter 3 section 2 of the CWP defines hunting as ...the process of proactively and iteratively searching through networks to detect evidence of Malicious Cyberspace Activity (MCA) to gain and maintain contact with an adversary and develop the situation.
+Become familiar with the following quotes — from Chapter 3, section 2 of the CWP — for more context around how the CWP presents the threat hunting function. A copy of the CWP has been attached to this task to perform a more in-depth review of Chapter 3, section 2.
+•	Where traditional cybersecurity is passive or reactive, CPT hunt operations take the fight to the enemy by proactively searching out, identifying, disrupting, and defeating threats resident in networks and systems. (2.a.1)
+•	Knowledge of adversary presence is not a prerequisite for the conduct of CPT hunt operations. (2.a.4)
+•	Hunting is an operation to find, fix, and track MCA, and is often driven by data analysis, threat identification, or other anomalous activity. CPTs, in contrast to local defenders, focus on those threat subsets with Tactic, Technique and Procedure (TTP)-specific capability, perceived intent, and opportunity to bypass security layers emplaced by Cybersecurity Service Providers (CSSP) and local network defenders. CPT hunt operations are predicated on the assumption [that] threats already reside within networks. (2.a.5)
+•	The absence of security alerts does not indicate an absence of threats, and may instead indicate security mechanisms did not detect a threat or intrusion.	Passive incident
+detection and threat hunting operations can, and should, be conducted simultaneously. (2.a.7)
+•	CPT hunt operations focus on narrowing MCA tactics to characterize the threat, and determine the threat's technical capability. (2.a.6)
+•	Successful hunt operations may require the CPT to establish a deliberate defense posture to further develop and coordinate detailed plans based on the adversary or MCA. (2.a.8)
+This information paints a relatively detailed picture about how threat hunting should be performed during a CPT threat hunting operation. A CPT analyst performing a threat hunting operation should proactively and iteratively seek evidence of MCA within an environment. CPT analysts should focus on hunting a subset of threats, specifically those with advanced TTP- specific capabilities, and should expect that these threats likely have the capability to avoid security controls that may already be in-place on a network. If, and when, a CPT analyst discovers evidence of MCA during hunting operations, they should gather additional data in order to determine the threat's technical capability; this data is used to help the CPT and local network defenders determine the actions that should be performed in response to the threat,
+ 
+which may include immediate clear operations, the creation of a deliberate defense posture, or other actions established via planning with local defenders and network owners. Threat hunting activities can, and should be, done alongside passive incident detection activities to increase the security posture of a network.
+
+CPT Hunting Operations
+Recall the CPT Operations Process (OP) presented in the CWP (and earlier in this course during the M2L1 - Operations Process lesson). Figure 3.1-1 outlines the six steps of the CPT OP:
+•	Objectives, Effects, Guidance
+•	Terrain Identification & Prioritization
+•	Capability Analysis & Force Allocation
+•	Orders Production and Dissemination
+•	Tactical Planning and Mission Execution
+•	Assessment
+
+Figure 3.1-1
+The remainder of this section discusses the first four steps of the CPT OP as they pertain to a threat hunting operation.
+ 
+Triggers
+There are three triggers that generally initiate the CPT OP. These triggers are presented along with an example of how each might trigger a threat hunting operation.
+•	Threat Intelligence: Threat intelligence can trigger a hunt operation by warning of an imminent or already-realized cyber attack, or by reporting on new indicators or adversaries that were recently seen in the wild. For example, intelligence about an adversary beginning to actively target the energy sector may trigger a CPT to perform hunts that look for evidence of that adversary on energy sector networks.
+NOTE: Threat intelligence can also inform the Tactical Planning and Mission Execution phase of a hunting operation, by allowing a threat hunter to develop more informed or more targeted hunting hypotheses. The creation of hunt hypotheses is discussed later in this lesson.
+•	Campaign Plan: CPT employment in support of Combatant Command (CCMD) campaign plans is intended to increase critical asset protection prior to operational need. Hunting for evidence of MCA on an asset prior to that asset's use can prevent an adversary's ability to monitor, control, or render that asset unusable during critical phases of CCMD's campaign plans.
+•	MCA Detection: Detection of MCA within a network may prompt further hunting operations. These operations may be employed in an attempt to discover additional MCA which has evaded detection, or to maintain further contact with an adversary that has already been discovered.
+ 
+Planning
+Once a CPT threat hunting operation has been triggered, the planning phases of the CPT OP (Steps 1–4) take place. These steps include determining the objectives and scope of the operation, terrain mapping, determining the Mission Relevant Terrain in Cyberspace (MRT-C) and Key Terrain in Cyberspace (KT-C), documenting Rules of Engagement (ROE) for the CPT, beginning to coordinate system access for the CPT, publishing and disseminating orders, and other actions. As indicated in Figure 3.1-2, CPTs are heavily involved in these planning actions. Note that the blue diamonds indicate items where a CPT is directly involved.
+ 
+Figure 3.1-2
+The planning phases of the CPT OP are crucial to set a hunting operation up for success. For example, a hunt operation tasked with looking for MCA related to a specific adversary group must rely on accurate threat intelligence and adversary analysis in order to prevent time from being wasted on hunting for things not related to that adversary. Additionally, information gathered during Terrain Mapping and Analysis can inform a CPT about the evidence sources that are currently available in an environment, and which of those evidence sources is most fruitful to hunt within. Lastly, knowledge about the MRT-C and KT-C within an environment can help a CPT focus its hunting efforts on the most relevant terrain in an environment.
+After the completion of the planning phases of the CPT OP, a CPT should be able to answer the following questions as they relate to the hunting operation:
+•	What is the scope and purpose of the hunting operation? — What triggered the operation? How long does the operation last? What is the intent and desired end state of the operation?
+•	What does the environment look like? — Has a network diagram been created that accurately documents the network? What applications, Operating Systems (OS), and
+ 
+hardware are in use in the environment? What security controls are already in place and potentially related to the operation?
+•	What evidence sources are available for a CPT to utilize during the hunt? — Is it necessary for a CPT to acquire evidence for itself, or can this be furnished by local defenders? Are there any visibility gaps that must be accounted for during evidence collection or investigation tasks? If the CPT requires access to additional data, what is the procedure to acquire this access?
+•	What are the ROEs that a CPT must adhere to within the environment? — Are there any actions that a CPT has been forbidden from taking? Are there any network segments, machines, or applications that are off-limits to the CPT? What actions are taken by the CPT if, and when, MCA is discovered?
+•	Who are the people that the CPT must keep involved during this operation? — Who are the Points of Contact (POC) that a CPT might need to reach out to? When should a CPT reach out to one or more of these POCs? What CPT actions need approval, and which POC can give this approval? How and when does the CPT share their results with appropriate POCs?
+This wealth of information is utilized by a CPT during the Tactical Planning and Mission Execution phase of a hunting operation. The next section of this lesson discusses how to conduct this step as it pertains to hunting operations.
+
+Tactical Planning for Hunt Operations
+A CPT that has completed the planning phases of the CPT OP is ready to begin the Tactical Planning and Mission Execution of the hunt operation. At this point, a CPT should understand the goals of their mission, the environment/network they are operating within, the individuals and groups that they need to communicate with during the operation, and any limitations, ROEs, or contingencies that exist or need to be planned for.
+Creating a Tactical Plan
+Appendix C of the CWP contains a Tactical Hunt Planning Guide that CPTs can reference when creating a tactical plan for a hunt operation.
+For example, section b.1.a of the guide outlines Network Topology, and lists the following items that should be documented in the tactical plan:
+•	Physical layout
+•	Logical layout
+•	External connections (if applicable)
+•	Critical systems (i.e., MRT-C, or KT-C, if identified)
+•	Services and applications
+The items above can be answered with the information gathered during the earlier planning phases of the CPT OP. In fact, a large majority of the sections in the tactical plan can be documented in a similarly straightforward fashion. The sections that are not as straightforward are of particular interest to CPT hunting operations, however. Each of these important sections is detailed as follows:
+ 
+Section b.1.d: Network Environment — Threat/Adversary Model
+This section of the tactical plan should contain information surrounding specific adversaries being targeted during the hunt, including those adversaries' TTPs, objectives, and other detailed intelligence about the adversary. For hunting operations, this section should be as thorough as possible, and might even include information on adversaries that are theorized to be targeting the mission partner's network, even if no tangible intelligence has been gathered to support this.
+Having this information allows a CPT to better focus their hunting efforts, and more accurately assess any suspicious indicators that arise over the course of the operation.
+Threat modeling is especially important for CPT hunting operations. Threat modeling performed by intelligence operators can serve as a Campaign Plan trigger — a threat model suggesting an adversary targeting a particular environment can trigger a proactive hunting operation within that environment. Additionally, threat modeling is an important step for a CPT to perform during operations that were triggered via active MCA in an environment, as the adversary responsible for that MCA very likely still poses an active risk to that environment. Hunting for TTPs and other indicators belonging to that adversary are key steps in determining the full scope of a compromise.
+Section c.1: Execution — Network/System Owner's Intent
+This section should clearly state the desired goals of the hunt operation, as determined by the network/system owner. A CPT should develop key tasks performed in order to achieve these desired goals. Many of the key tasks for a hunting operation should include high-level hunting topics; a CPT hunting operation likely consists of multiple individual hunts, each of which is aligned to a topic described in a key task.
+ 
+Section c.12: Execution — Collection Plan
+This section documents the plan to collect data from the environment. This data can either be used to answer questions that arose during earlier planning steps, or can be used directly during the execution of an individual hunt. This section should also document any analytics present in the environment, such as any pre-existing automated detection/alerting platforms, and outline a plan for developing suspicious hunt findings into actionable analytics. Lastly, this section should establish a plan for the consolidation and analysis of the data a CPT needs access to in order to conduct the hunting operation.
+Section c.13: Execution — Analysis Plan
+This section combines and further develops the items documented in Section C of the Tactical Hunt Planning Guide. At this point, a CPT should be developing the key tasks they have identified into individual hunts via the creation of hunt hypotheses, which are discussed later in this lesson. The plan for each hunt should include details on what a CPT is hunting for and which data sources are required to do so. This section should also document an overarching information sharing plan for any new adversary indicators or TTPs that are uncovered during the course of a hunt.
+Section c.14: Execution — Response/Incident Response
+This section details what actions are taken if, and when, MCA has been identified in an environment. This information is extremely important, as it fully details the scope of the operation and further defines the ROEs that a CPT must abide by. For example, a CPT may be tasked with passing potential MCA findings to the local defender's Incident Response (IR) team for further investigation and confirmation that the finding represents an actual threat. In this case, the IR section of the tactical plan should detail the necessary requirements needed to engage the IR team, and how the details of the identified MCA are communicated between the CPT and the IR team.
+There is no formally-defined format for tactical plans. However, the Tactical Hunt Planning Guide presented in the CWP serves as an excellent reference point to make sure all the information required to perform a hunting operation has been collected and clearly documented.
+
+Identifying and Collecting Data for Hunting
+During the creation of the tactical plan, a CPT identifies the key tasks that need to be performed in order to meet the goals of the operation as determined by the network/system owner. For hunting operations, these key tasks include high-level hunt topics that can be further broken down into individual hunts. For each hunt, a CPT must identify relevant data that exists within the environment, and develop a plan for acquiring access to this data or otherwise collecting it for themselves, if allowed.
+ 
+In terms of collecting data from these data sources, a CPT must be prepared to adapt to a wide array of situations — due to the variety of data sources available, as well as differences between networks, no set plan can be established for collecting data from an environment. For example, a CPT might be able to gain access to a pre-existing data source owned by the local network operators, or could ask local defenders to configure a pre-existing data stream to send data into the CPT’s mission kit. Alternatively, a CPT might gather data for themselves via the deployment of a network tap or by collecting the data directly from endpoints, if the ROEs allow for it.
+In general, a CPT should have knowledge of the different types of security-related data that can exist within an environment. This knowledge lets a CPT make informed decisions about which data sources are the most valuable during a hunt. Additionally, a CPT may be able to make additional requests of local network owners and operators in order to acquire access to other data sources.
+As you proceed through the rest of this course, become intimately familiar with different data sources that may be applicable to threat hunting. The following broad categories serve as an introduction to the types of data sources that a Cyber Defense Analyst (CDA) should be familiar with.
+Host Logs
+Host logs are generated by the OS installed on an individual host or endpoint. A wide array of host logs are available, but not all are usable for security-focused investigation activities.
+Additionally, different OSs contain vastly different types of host logs — cybersecurity analysts performing a host log investigation must learn to cope with many different sources, types, and qualities of logs generated across each investigated OS.
+Generally, host logs contain granular information about events that occur on a host. Since these events are logged by the OS, they contain some unique information that can be very helpful to security investigations. The following events are a very small sample of the host logs that might be generated on an endpoint:
+•	A process was started or stopped
+•	A network connection was attempted
+•	A user logged in to or logged out of the machine
+•	A new device was plugged into the machine
+Examples of data sources that hold these types of logs include the Windows event log (on Windows systems), or the System Log (syslog) and System Daemon (systemd) logs on Unix systems.
+Network Logs
+Network logs are generated by applications or devices that handle network connections in some fashion, and contain information about a connection such as its source, destination, associated ports, and amount of data being transferred. More advanced network logs may include additional details about each connection — for example, network logs from HTTP traffic usually include the type of HTTP request that is being made and the HTTP response code returned by the server handling the request.
+ 
+Some network logs are generated as part of normal OS activity, and may be accessed in the same ways that an analyst might access host logs. Other network logs are generated by specific devices or networking appliances such as routers, firewalls, or proxy devices. How an analyst collects, parses, and analyzes logs from these sources may differ greatly depending on the specific source that is generating the logs.
+Security Appliance Logs
+Security appliance logs are logs generated by a security appliance, an antivirus log indicating that potential malware was identified and removed, or an IDS identifying network traffic containing potential attack patterns. As the goal of many security appliances is to prevent or detect MCA, these logs are usually directly related to potential MCA.
+Application Logs
+This broad category of logs simply means any logs generated by an individual application. Not all applications generate logs, and just because a log exists does not mean it is useful to a security investigation. Application logs can be incredibly useful in certain situations, however. For example, if an analyst needs additional information surrounding an attacker's direct interactions with an application, or when an attack vector is performed through exploiting a specific application, application logs may provide crucial insight into the attacker’s activity.
+Application logs can also be utilized for security investigations as a backup source of evidence to fill potential visibility gaps or provide more context to an investigation. As an example of this, imagine a database server in an environment that contains no network logging solutions. If an attacker launched a network-based attack against the database server in this environment, how could the attack be identified by a CDA? In this case, the database application is likely logging incoming requests, including the attacker's requests — an analyst could potentially use these database logs as evidence to investigate the attack.
+In actuality, the categories suggested above are rough approximations of various data sources that are likely to be present in an IT environment. Specific knowledge of the system or application that is generating a log is usually required in order to utilize the log to its full potential.
+ 
+Stone Panda Planning
+
+Figure 3.1-3 — Zhang “baby dragon” Shilong (a member of APT10)
+Using the provided threat intelligence product, answer the following questions about APT10 (also known as Stone Panda). Document your answers in Notepad on the cda-win-hunt VM, or by some other method of your choice.
+•	What method(s) has APT10 used to gain access to environments?
+•	What tools and/or malware has APT10 been known to deploy?
+•	What method(s) has APT10 used to accomplish lateral movement?
+•	What exfiltration method(s) has APT10 used?
+Once this information has been documented, continue the planning process by developing key tasks that enable a mission element to hunt for APT10/Stone Panda.
+
+Planning Summary
+So far, you have learned how a CPT can perform the planning phases of the CPT OP to successfully prepare for a hunt mission. During these steps, a CPT collects a wealth of information about the mission and the environment that the mission is conducted in. For hunting operations, knowledge of the goals of the mission, adversary TTPs, and data sources present in the environment are crucial to the operation’s success. All this collected information can be further distilled into a tactical plan, which serves to communicate a CPT’s understanding of the mission and the environment in which the mission takes place. Within this tactical plan, a CPT should have identified individual hunts that can be executed upon in order to achieve the mission’s goals, along with the data sources present in the environment that contain data relevant to the hunt.
+Now that the operation planning has been completed, a CPT is finally ready to execute upon an individual hunt. The following task chain details the process of executing a hunt based on the information documented within the tactical plan.
+ 
+Executing a Hunt
+During the creation of the tactical plan, a CPT breaks the operation's key tasks into high-level hunt topics, which can then be further broken down into individual hunts. After doing this — and collecting data relevant to each hunt — a CPT is ready to perform the data analysis and investigative tasks required to execute a hunt.
+The Threat Hunting Loop
+
+Figure 3.1-4 — Image from Sqrrl
+In The Threat Hunting Reference Model publication series, Sqrrl presents the Threat Hunting Loop as a way to tactically implement a hunt. It consists of four stages that guide an analyst or team of analysts through the execution of a hunt.
+Create Hypotheses
+As stated earlier, a CPT hunting operation should consist of multiple individual hunts, each of which can be executed by following the Threat Hunting Loop. Each hunt poses a single hypothesis, then uses evidence gathered from the network to prove or disprove that hypothesis.
+Creating a hypothesis is the first stage of the Threat Hunting Loop because a hypothesis is the foundation on which a hunt is built. As stated by Sqrrl in the Hunt Evil: Your Practical Guide to Threat Hunting publication:
+A hunt starts with creating a hypothesis, or an educated guess, about some type of activity that might be going on in your IT environment. Hypotheses are typically formulated by analysts based on any number of factors, including friendly intelligence and threat intelligence, as well as past experiences.
+An example hunting hypothesis gives you an idea of what a hypothesis might look like. Full understanding of the following hypothesis is not required to continue with this lesson.
+Anomalies seen in [Hypertext Transfer Protocol] HTTP user-agent strings may be indicative of attacker…C2 activity over HTTP. These anomalies may include, but are not limited to, misspelled user-agent strings, uncommon user-agent strings, or user-agent strings associated with outdated versions of legitimate software.
+More information surrounding the creation of hunt hypotheses is presented later in this lesson.
+ 
+Investigate Via Tools and Techniques
+During this stage, an analyst actually begins performing an investigation. Since the CPT has already created a tactical plan, they should know which evidence sources are present in the environment and relevant to the given hunt. A CPT should also have knowledge of the tools available within their mission kit that can be used to investigate these evidence sources.
+This phase also makes reference to techniques — more specifically, this refers to hunting techniques. Hunting techniques are data analysis techniques that are used to investigate a set of data during a hunt. These can range from very basic techniques like running simple searches against a dataset, to incredibly complex techniques such as machine learning or advanced statistical analysis.
+Uncover New Patterns and TTPs
+Once suspicious activity has been identified, an analyst must determine if the activity can truly be traced back to an attacker. This may be immediately evident upon initial discovery of a suspicious pattern, or may require a deeper investigation. This phase can also include further refinement of the hunting techniques used to initially identify the activity.
+This step often allows an analyst to refocus or reword the initial hypothesis, and may even generate new hunting hypotheses. An analyst should document these hypothesis ideas as they come up — investigating a second or third hypothesis may reveal instances of suspicious activity that the first hypothesis did not.
+Inform and Enrich Analytics
+The last step of the Threat Hunting Loop involves informing and enriching automated analytics. The Sqrrl Hunt Evil: Your Practical Guide to Threat Hunting publication clearly states the goal of this step:
+Don’t waste your team’s time doing the same hunts over and over. If you find an indicator or pattern that could recur in your environment, automate its detection so that your team can continue to focus on the next new hunt.
+During this step, a CPT should document the suspicious pattern that was identified, the associated analysis techniques used to detect the pattern, and any analytics that were developed around this pattern, such as detection rules, searches, and code used for data analysis. It is not possible, or advised, to try to fully automate every hunt result. In certain environments, automated detection may not be feasible, or even possible. However, the investigative and analysis steps taken during each hunt should be well-documented, so that the hunt can be more easily repeated later.
+Any automated analytics or hunt documentation created during this step should be placed within an appropriate knowledge management solution to help improve the operations of other CPTs. A version of this documentation can also be provided to local defenders and local network operators in order to help improve the network’s security posture.
+ 
+Friendly intelligence — information about the normal operations of the environment that the hunt is being conducted within — can also be created during this step. Friendly intelligence can include items such as a software inventory, a catalogue of important server locations, and other details about the environment. Documenting friendly intelligence can be especially important during a long-term hunting operation, as it allows a CDA to more quickly recognize what normal looks like in a given environment.
+Threat Hunting Loop Summary
+As described by the Threat Hunting Loop, a hunt starts with a hypothesis, which is then investigated using hunting techniques and associated tools in order to uncover patterns of potential attacker activity. These patterns are further analyzed to determine if they are related to attacker activity, effectively proving or disproving the initial hypothesis. Lastly, the knowledge uncovered during the hunt is documented and, if possible, used to improve automated analytics, detection, and future hunting operations.
+The Threat Hunting Loop is a simple process that can greatly improve hunting capabilities by allowing hunts to be focused, effective, and iterative.
+
+Hunting for CyberButler Activity
+In the rest of this lesson, plan and execute a hunt for MCA related to a fictional adversary known as CyberButler. Below is a tactical plan that was created during the CPT OP to support the hunting operation.
+NOTE: In order to provide a concise scenario, many sections normally included in the tactical plan have been left out, as they are not directly related to the hunt being performed.
+Tactical Plan SITUATION
+This CPT hunt operation was triggered by threat intelligence confirming that the adversary group known as CyberButler has recently been observed targeting defense contractors. The operation occurs within the network of defense contractor CDA Corp, who has been identified as a likely target for CyberButler attacks.
+THREAT INTELLIGENCE
+Several intelligence reports have tied CyberButler to multiple successful breaches of American private-sector companies, specifically those involved with the creation of consumer-grade solar energy technology. CyberButler’s end goal during these breaches has been to steal design and engineering documents related to various solar technologies.
+The SilverPlatter malware, known to be associated with CyberButler, was recently found during a security investigation of a defense contractor, XYZ Industries, which indicates that CyberButler may have recently changed their preferred targets.
+NOTE: From the high-level threat summary, the CPT’s planning team digs deeper into threat reports on CyberButler to extract the following TTPs. Those TTPs are critical as the mission elements conceive and execute their hunt hypotheses.
+ 
+TTPs
+The following TTPs have been positively attributed to prior CyberButler attacks:
+•	CyberButler gains initial access to a network via delivery of the SilverPlatter malware within a spearphishing email. These emails try to trick users into opening and executing the SilverPlatter malware by making the malware payload seem like urgent financial documents.
+•	After gaining initial access, CyberButler operators enumerate account usernames within the domain. Then, they perform brute force attacks against a small number of high- privileged accounts in an attempt to guess the passwords for the accounts.
+○	NOTE: All brute force attacks performed by CyberButler were performed against domain user accounts. These accounts generally provide access to resources across an entire network, and are not associated with any one specific application such as an email service or website.
+•	Once CyberButler successfully compromises a high-privileged account, they move laterally throughout the network in order to gather and exfiltrate important data and complete their operation.
+MISSION STATEMENT
+Hunt for any indicators of CyberButler MCA within the CDA Corp network, focusing specifically on known CyberButler TTPs. If MCA is discovered, information about the MCA is communicated to the CDA Corp IR team in order to affect the removal of CyberButler actors from the network.
+KEY TASKS
+These key tasks — individual hunts, in this mission — are derived from the TTPs identified in the tactical planning step. This process of getting high-level threat intelligence, drilling down into the intelligence to identify adversary TTPs, and then converting those into mission-relevant key tasks, is at the core of the tactical planning function.
+•	Hunt for CyberButler MCA:
+○	Topic: CyberButler spearphishing indicators
+■	Hunt for indicators found within subject lines in past CyberButler phishing emails
+■	Hunt for indicators matching known CyberButler sender addresses
+○	Topic: Brute force account compromise indicators
+■	Hunt for brute force attacks targeting domain accounts
+●	Friendly intelligence has indicated that domain accounts within the CDA Corp network follow the format firstname.lastname (e.g., john.doe)
+○	Topic: SilverPlatter malware indicators
+■	Hunt for known SilverPlatter malware hashes
+■	Hunt for SilverPlatter C2 indicators
+■	Hunt for SilverPlatter execution patterns
+•	Document any hunting actions performed
+•	Document any MCA identified during the hunts
+•	Communicate details surrounding any identified MCA to the CDA Corp IR team
+ 
+NOTE: After reading the remainder of the tactical plan, prepare to plan and perform the hunt for brute force account compromise indicators. The other hunts are included above to demonstrate that multiple hunts are necessary to fully complete this CPT operation. However, the rest of this lesson excludes these hunts, in order to keep things more concise.
+DATA COLLECTION PLAN
+Brute Force Attack Indicators
+In order to identify brute force attack indicators, authentication logs from CDA Corp endpoints are required. As discovered during the site review of CDA Corp, host logs are automatically gathered from endpoints across the environment and are collected into CDA Corp’s Elasticsearch cluster. As CDA Corp endpoints primarily use the Windows OS, the host logs that are generated are from the Windows event log present on an endpoint, which contains authentication logs for that endpoint. The Windows event log is a suitable data source for hunting brute force attack indicators.
+CDA are able to access these logs through a Kibana instance normally used by CDA Corp’s IR team.
+INCIDENT RESPONSE
+CDA Corp network owners want the CPT to focus its efforts on the discovery of potential MCA; further investigation of suspected MCA is undertaken by the CDA Corp IR team. In order to facilitate their investigation, the CDA Corp IR team requests that a summary of the suspected MCA and a list of the involved endpoints be sent to IncidentResponse@cda.corp upon discovery.
+Now that you have reviewed the tactical plan, keep it in the front of your mind as you proceed through the hunting scenario.
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Creating a Password Guessing Hunt Hypothesis
+As stated earlier, a hunt hypothesis is an educated guess about some activity that may be occurring within an IT environment. However, not all hypotheses are created equal. A good hypothesis might accomplish any or all of the following:
+•	Direct analysts towards potential analysis methods
+•	Propose what attacker activity might look when found
+•	Identify likely sources of evidence to hunt within
+•	Provide a path for analysts to follow in order to prove or disprove the hypothesis
+Develop a hunting hypothesis surrounding the Brute Force Account Compromise hunt proposed within the tactical plan. Based on the threat intelligence described in the tactical plan, CyberButler is known to compromise domain user accounts by performing brute force attacks after gaining initial access to a network. These brute force attacks occurred against a small number of high-privileged accounts. Based on these patterns, it seems that CyberButler performs a specific subset of brute force attacks known as password guessing attacks. In many cases, a
+ 
+hunt topic such as Brute Force Account Compromise would have to be broken down further into multiple hunts — it is only because of known CyberButler TTPs that the Brute Force Account Compromise topic only requires one hunt.
+Brute force attacks — as well as the sub-technique of password guessing attacks — are defined within the MITRE ATT&CK cyber adversary knowledge base. Though not necessary for this lesson, you can review the MITRE Brute Force technique T1110 page for more information on brute force attacks: https://attack.mitre.org/techniques/T1110/. The MITRE ATT&CK knowledge base and associated frameworks are discussed later in this course.
+Password Guessing Attack Overview (MITRE T1110.001)
+A password guessing attack is exactly as it sounds — if an attacker knows the username of an account, they can try to guess the password for that account. Successfully guessing the password should allow the attacker to log in as that user account. This attack can be performed against as many accounts as the attacker wishes to run it against, but is usually performed against a specific target account.
+Usually, password guessing attacks are performed via an automated tool, which can guess many different passwords in a short amount of time. In practice, attackers often try to limit the number of passwords they need to guess by choosing passwords from a password list, which contains hundreds or thousands of commonly-compromised passwords that have been extracted from breach reports. This greatly increases the attacker’s chance of success, as many users choose simple, easy to remember passwords such as password, abc123, or letmein. Each of these common passwords shows up on many open-source password lists.
+Password guessing attacks should be relatively easy for a defender to detect. Unless the attacker is extremely lucky, nearly all the passwords guessed by the attacker are incorrect.
+Though not required for this lesson, see https://attack.mitre.org/techniques/T1110/001/ for a deeper explanation of password guessing attacks.
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Password Guessing
+The best indication that the jane.doe account was the victim of a password guessing attack would be an abnormally high amount of login failure events for the jane.doe account.
+During a password guessing attack, the attacker is expecting to fail multiple logins as they attempt to guess the correct password for an account. Each of the logins that use an incorrect password generates a login failure event. Thus, a large amount of login failure events for the jane.doe account is the best indicator of this activity — it does not matter if these login failure events are spread across multiple systems or occur on only one system.
+Password Guessing Hypothesis
+Now that an indicator for password guessing activity has been identified, all that is left is to rephrase the indicator in the form of a hunting hypothesis. A fully-developed hunting hypothesis for the CyberButler password guessing hunt might look something like the following:
+ 
+Because the attacker is simply guessing at passwords during a password guessing attack, most of their login attempts are likely to fail. Therefore, a high volume of login failure events for a single user account may be indicative of attacker password guessing activity.
+The hypothesis presented above has been intentionally left generic. Regardless of the data source or threat actor involved, the hunt hypothesis above is a great one to use for any hunt on password guessing activity. However, a CPT may want to include additional knowledge within their hunting hypotheses to provide more details about a threat actor or the network they conduct their hunt within. An alternative version of this hypothesis that focuses on CyberButler’s use of password guessing attacks might look like the following:
+CyberButler uses password guessing techniques to attempt to compromise a small set of high- privileged domain user accounts. Because of the password guessing techniques used, most of CyberButler’s login attempts are likely to fail. Therefore, a high volume of login failure events for a single domain user account may be indicative of CyberButler password guessing activity.
+
+Preparing for the Hunt
+Perform the hunt for CyberButler password guessing activity.
+Setup
+The hunt is conducted via Kibana, an open-source interface that allows for searching over data stored in Elasticsearch. Familiarity with these tools is not required to conduct the hunt, as the instructions contain all the steps necessary to navigate the tools and complete the investigation. These tools are discussed in far greater detail later in this course.
+[See Job Sheet 3-1-1] Discover Overview
+Kibana is discussed in much more detail later in this course. For now, familiarize yourself with the following areas within the Discover application, as they are used extensively during the hunt.
+[See Job Sheet 3-1-2]
+
+Executing the Password Guessing Hunt Identifying Data Sources
+Recall the password guessing hunt hypothesis that was developed earlier:
+CyberButler uses password guessing techniques to attempt to compromise a small set of high- privileged domain user accounts. Because of the password guessing techniques used, most of CyberButler’s login attempts are likely to fail. Therefore, a high volume of login failure events for a single domain user account may be indicative of CyberButler password guessing activity.
+The hypothesis states that a high volume of login failure events for a single domain user account may be indicative of a CyberButler password guessing attack. The tactical plan has identified that host logs are needed in order to perform this hunt, and that Windows event logs seem to be the most likely source for these logs. Within Windows event logs, 4625 Login Failure events are generated on a host whenever an account fails to log in to that host.
+ 
+NOTE: Throughout the rest of this lesson, Windows 4625 Login Failure events are referred to by the common shorthand phrase 4625 events.
+The following fields are some of those present in 4625 events. The fields listed below are directly relevant to the hunt.
+Field Name	Description
+
+winlog.event_id	The event code of the Windows event that was generated. For this hunt, this is used to search for 4625 events.
+
+winlog.computer_name	The computer name that generated the 4625 event. In the case of a network login where Computer A tried to log in to Computer B, this shows up as Computer B.
+winlog.event_data.TargetUserName	The username that attempted to log in.
+Table 3.1-1
+Hunt Analysis Steps
+The ultimate goal of the hunt hypothesis is to identify domain accounts with a high volume of 4625 events, as these accounts may have been the victims of a password guessing attack.
+Perform the following steps along the way to accomplishing this goal:
+[See Job Sheet 3-1-3] Executing the Hunt
+Follow the steps below to create a query to identify 4625 events.
+[See Job Sheet 3-1-4]
+From the results displayed in the table, it is clear that all the login failures for the jess.whitney account occurred over the network (i.e., one endpoint attempting to log into another endpoint). The source of these login attempts was the remote IP address 172.16.3.3. (Any login failures that occurred locally, such as from a user incorrectly entering their password, show up with an IpAddress of 127.0.0.1 — the localhost IP address.)
+Hunt Technique: Stack Counting
+The data table visualizations that you created are examples of a bread and butter hunting technique known as stacking, data stacking, or stack counting. Stack counting involves counting how many times each unique occurrence of a value occurs within a particular field in a dataset, then comparing these counts against each other. This is exactly the analysis that you performed when you created a bucket on the winlog.event_data.TargetUserName field — this bucket displayed the number of 4625 events that each account generated.
+For more information on stack counting, read the following FireEye article that gives an in-depth explanation of the technique. https://www.fireeye.com/blog/threat-research/2012/11/indepth- data-stacking.html
+ 
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Hunting Over a Larger Timeframe
+You started the password guessing hunt by narrowing the search timeframe to June 14, 2021. In real hunt operations, it is much more likely that a longer timeframe is established for a CPT to hunt over — perhaps the last 30 or 60 days worth of data. Storage concerns may also prevent organizations from keeping data older than a certain age. Large organizations with many thousands of endpoints may spend millions of dollars per year on hardware and software to collect, analyze, store, and retrieve security data. Increasing the number of logs that need to be stored can have a drastic effect on the cost of storing them. CPTs should be aware of these and other data retention issues that could prevent them from completing a hunt to the best of their ability.
+Using the same data table visualization that was created for the password guessing hunt, expand the time range to see seven days worth of 4625 events.
+Select the end date shown in the date-time picker. Change the end date to Jun 21, 2021 @ 00:00:00.000. Select Update once the new end time has been set in order to run the query.
+
+Figure 3.1-27
+Looking at the results, it appears that a lot more 4625 events occurred later in the week.
+
+Figure 3.1-28
+These events showcase a different pattern than the one identified originally. Instead of a large number of login failures for a single user account, there appear to be a relatively small number of login failures spread across multiple user accounts.
+ 
+This pattern hints towards another type of brute force technique that is commonly used to compromise user accounts: Password Spraying.
+Password Spraying Attacks (MITRE T1110.003)
+A password spraying attack is very similar to a password guessing attack, but offers one key advantage: the ability to subvert account lockout policies. Many networks have an account lockout policy in place to defend against password guessing attacks by automatically locking any accounts that have too many failed login attempts over a certain period of time. This effectively rate-limits any password guessing attacks that an attacker might attempt, rendering these attacks mostly useless.
+In a password spraying attack, attackers spray a small number of common passwords against multiple user accounts. Usually, attackers who want to perform a password spray try to do so against an extremely large number of accounts, which greatly increases their chances of success. If the number of passwords being attempted for each account is less than the number of login attempts allowed by the account lockout policy, an attacker can avoid locking a large number of accounts out of the network — something that is sure to be noticed by the multiple angry users who can no longer log in.
+Password spraying attacks are a little harder to identify than password guessing attacks. Attackers are intentionally trying to avoid the account lockout policy by spreading guesses across a large number of accounts, which means that the number of login failures for a single account is unlikely to look abnormal.
+See https://attack.mitre.org/techniques/T1110/003/ for a deeper explanation of password spraying attacks.
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Identifying Password Spraying
+From the list of possible answers, the best indicator to identify a possible password spraying attack is an abnormal increase in the amount of login failure events across many user accounts. In a password spraying attack, an attacker could be trying as little as a single password across multiple accounts — while a single login failure for an account could be attributed to almost anything, a large increase in the overall number of login failures across many users is much more suspicious.
+Hunt Technique: Baselining
+The success of this indicator relies on a hunting technique called baselining. Put simply, baselining is a comparison of the current state of a network against some known-good state. This known-good state might be simple intuition that an analyst has built from their past experience, or it might be based on actual data that was collected from the network. This known-good state is referred to as a baseline — any large deviations away from this baseline can be investigated in order to determine if they are the result of MCA.
+For a password spraying hunt, proper baselining requires an approximate knowledge of the expected amount of login failures in the network over a given time period — a number of login
+ 
+failures that deviates too far from this expected amount is suspicious and should be further investigated.
+Building a Baseline
+The data table visualization is unable to show when a particular set of events occurred, which makes it less than ideal for performing a baselining hunt. It is impossible to get a sense of what a normal amount of 4625 events might look like for the CDA Corp environment without looking at a larger time frame of activity.
+[See Job Sheet 3-1-5]
+This full week’s worth of information serves as a good baseline. Other than the suspected attacker activity, it seems that almost no login failure events regularly occurred within the CDA Corp environment. In any case, login failures certainly do not occur frequently enough to account for either of these large spikes.
+Assuming that this activity can be positively attributed back to CyberButler, it seems that the group has changed their tactics, and are beginning to use password spraying techniques in addition to password guessing techniques.
+
+Brute Force Account Compromise Hunt
+You completed a successful hunt for CyberButler password guessing and password spraying activity using Kibana’s Discover and Visualize applications. Recall that during the tactical planning phase, the following key tasks were selected for execution by your mission element.
+•	Hunt for CyberButler MCA:
+○	Topic: Brute force account compromise indicators
+■	Hunt for brute force attacks targeting domain accounts
+●	Friendly intelligence has indicated that domain accounts within the CDA Corp network follow the format firstname.lastname — for example, john.doe
+○	Document any hunting actions performed
+•	Document any MCA identified during the hunts
+•	Communicate details surrounding any identified MCA to the CDA Corp IR team During the hunt, you performed the following actions:
+•	Created a search to identify 4625 login failure events
+•	Identified and filtered out extraneous data by filtering out data that did not match CyberButler TTPs
+•	Identified a suspicious pattern in 4625 events using the Timeline Graph
+•	Used a data table visualization to determine the usernames associated with the 4625 events
+•	Further modified the visualization to determine the IP address of the endpoints performing the login attempts
+•	Expanded the search time frame and identified an additional suspicious pattern in the 4625 events
+ 
+•	Used the expanded search time frame to identify a known-good state for 4625 events in the environment
+Overall, the actions that were taken during the hunt uncovered the following evidence:
+•	On June 14, a large spike in login failure events occurred within a very short time window.
+○	Most of these login failure events were attributed back to a single account,
+jess.whitney.
+•	On June 15, a smaller spike in login failure events occurred.
+○	These login failure events were attributed back to multiple user accounts within the CDA Corp domain.
+•	Both of these spikes were caused by remote login attempts from an endpoint with IP address 172.16.3.3.
+The evidence uncovered seems to line up with a password guessing attack against the jess.whitney account. Additionally, it seems that a password spraying attack was run against several CDA Corp user accounts.
+Mission Assessment
+Though not discussed in this lesson, the Mission Assessment phase of the CPT OP assesses the overall effectiveness of the mission upon its completion. This is done by comparing the key tasks identified during the tactical planning step against the actions taken to meet those key tasks.
+It is important to note that the effectiveness of a mission is not predicated upon detecting MCA, but rather on successfully executing key tasks and fulfilling the commander’s intent. In this example, you were highly successful at executing the mission in a manner consistent with the commander’s intent, fulfilling several key tasks and subtasks while identifying two types of MCA.
+Possible Alternative Explanations
+When investigating suspicious activity, it pays to keep in mind possible alternative explanations for the activity. For example, the spikes in login failures for the jess.whitney account might have been caused by an incorrect password that Jess was using in an automated script — this explanation seems to explain the extremely high rate of login attempts, as well as why the login attempts were failures instead of successes. Just because a particular piece of evidence is suspicious does not necessarily mean it was caused by an attacker.
+Ruling out alternative explanations is a crucial step when executing a threat hunt. Some alternative explanations can be investigated and ruled out via data available within a platform such as Kibana, but others may require a deeper investigation into forensics artifacts only present on the suspiciously-behaving host.
+ 
+Next Steps
+Recall the steps defined in the Threat Hunting Loop.
+
+Figure 3.1-34
+Uncover New Patterns & TTPs
+The hunts performed completed the Uncover New Patterns & TTPs step of the Threat Hunting Loop.
+For the password guessing hunt, the pattern identified was a large increase in login failure events for a single user account. For the password spraying hunt, the pattern identified was an increase in login failure events across multiple users that deviated significantly from the baseline (i.e., the normal amount of 4625 events that regularly occurred in the environment).
+The CDA Corp IR team needs to finish their investigation in order to determine if the patterns identified during the hunt were truly caused by MCA.
+Inform & Enrich Analytics
+The Inform & Enrich Analytics step of the Threat Hunting Loop dictates that automated detections and analytics should be developed, if possible, to prevent analysts from running the same hunts over and over. Depending on the patterns or TTPs identified, different forms of automated analytics and detections can be implemented. For these hunts, a Saved Visualization could be created in Kibana in order to save all the search and bucket configurations that were set up during the password guessing hunt. Though this is not fully-automated, it still allows analysts to perform quicker hunts for suspicious login failure events in the future.
+An idea for an automated detection rule might be to detect if an account has too many unsuccessful log in attempts over a short time period. The full implementation of such a detection rule relies heavily on the technology available to CDA Corp, so it is not discussed in detail in this lesson.
+Lastly, the steps taken during the hunt can be documented in a hunt playbook. A hunt playbook provides a step-by-step walkthrough of the actions taken to perform a hunt, including any useful queries, and descriptions and examples of the types of patterns that the hunt is trying to identify. A hunt playbook would look extremely similar to the instructions followed while working through this task.
+ 
+Mitigation
+Though not directly included in the Threat Hunting Loop, it is important to discuss potential mitigation strategies for the brute force activity identified during these hunts. As stated earlier, most modern organizations implement an account lockout policy to prevent password guessing attacks from succeeding. Having this policy in place likely prevents an attacker from successfully compromising an account. Note that this mitigation does not stop an attacker from launching a password guessing attack — it simply reactively locks out any accounts that fail too many login attempts in quick succession.
+After conducting this hunt, it is prudent to discuss the account lockout policy with local network operators to determine if this mitigation strategy can be implemented or has been already.
+
+Conclusion
+Threat hunting is a core function that every CDA must be comfortable performing. In this lesson, you learned about threat hunting as defined by the CWP, and saw how the information gathered during the planning stages of the CPT OP directly informs the creation of a tactical plan. This tactical plan charts the course for a hunting operation via the development of key tasks. After learning how to break these key tasks into hunt topics — and further into individual hunts — you were introduced to broad categories of data sources that serve as evidence sources for threat hunting and security investigation. You were also introduced to the Threat Hunting Loop, which guides an individual hunt to completion via the creation and investigation of threat hunting hypotheses.
+You worked through a scenario to execute two hunts for brute force attacks performed by a fictional adversary. During these hunts, you developed hunting hypotheses, performed investigations using the stack counting and baselining hunting techniques, and identified suspicious patterns within the data in accordance with the Threat Hunting Loop. You learned about the types of automated analytics that could be developed based on the hunts you performed, which includes automated detection rules, saved Kibana visualizations, and hunt playbook documentation. Lastly, you learned about a mitigation strategy to help prevent successful compromises as a result of brute force attacks.
+As threat hunting is a core function of the CPT, it is important to have a good base of foundational knowledge. As you perform other hunting and investigation tasks within this course, build on the foundations laid during this lesson.
+ 
+
+
+PLANNING AND EXECUTING A HUNT MISSION
+Workflow
+1.	Log in to the cda-win-hunt Virtual Machine (VM) using the following credentials:
+Username: trainee
+Password: Th1s is 0perational Cyber Training!
+2.	Open Google Chrome by selecting the icon on the taskbar or double-clicking it on the desktop.
+
+Figure 3.1-5
+3.	Navigate to the Discover - Elastic page by selecting its bookmark from the Bookmarks bar. It may take a few seconds for the page to load.
+
+Figure 3.1-6
+4.	If a certificate warning displays, proceed past it by selecting Advanced > Proceed to 199.63.64.92 (unsafe).
+
+Figure 3.1-7
+5.	If prompted, log in to Kibana using the following credentials:
+Username: onion@cda.corp
+Password: Th1s is 0perational Cyber Training!
+The Kibana Discover application displays.
+ 
+
+
+PLANNING AND EXECUTING A HUNT MISSION
+Workflow
+
+Figure 3.1-8
+1.	Enter search queries into the Search.
+2.	Set the time frame to search using the Date-time Picker.
+3.	Run or refresh results after changing queries or search time frames using Refresh.
+4.	Narrow down the search results by using Add filter.
+5.	Use the Timeline Graph for a quick overview of how many events occurred during a certain time. (For example, Figure 3.1-8 shows that many events occurred within the first 30 minutes of every hour, but decrease for the last 30 minutes of every hour.)
+6.	View information about an individual event with Event View. Select > to show individual fields present within the event.
+ 
+
+
+PLANNING AND EXECUTING A HUNT MISSION
+1.	Create a search to identify all 4625 events.
+2.	Identify any extraneous results present in the search results.
+3.	Filter out the extraneous results, as they may obscure actual results.
+Keep these steps in mind as you proceed through the first half of this exercise.
+ 
+JOB SHEET 3-1-4
+
+PLANNING AND EXECUTING A HUNT MISSION
+1.	Double-click Last 24 hours inside the date-time picker to open it. Select Absolute, and change the start time to Jun 14, 2021 @ 00:00:00.000.
+
+Figure 3.1-9
+2.	Select Now from the date-time picker, and repeat the steps above to select Jun 15, 2021 @ 00:00:00.000 as the end time.
+3.	Enter the following query into the Search.
+winlog.event_id:4625
+The query searches for all Windows events with event ID matching 4625, and accomplishes the first step that was detailed earlier.
+4.	Select Refresh to run the query. The number of events returned is indicated above the
+Timeline Graph.
+
+Figure 3.1-10
+Nearly 22,000 login failure events over a 24-hour period is quite troubling. In order to determine the cause of this large amount of events, do some additional investigation into the results.
+ 
+5.	Select > next to the first event to open it.
+
+Figure 3.1-11
+6.	Scroll down to the winlog fields present in the event. These fields are directly relevant to an individual login failure event, and can be used to assess whether the query is working as intended.
+
+Figure 3.1-12
+In this case, the associated ComputerName appears to be CDA Corp’s mail server, and the TargetUserName that is listed appears to be an email address. Though it is possible to compromise email accounts with a password guessing attack, these accounts are out-of-scope for the hunt based on prior knowledge about CyberButler TTPs.
+ 
+As stated within the tactical plan, CyberButler attempts to compromise domain accounts via their password guessing attacks — friendly intelligence included in the tactical plan indicated that domain accounts for CDA Corp follow the format firstname.lastname. Thus, the email address account that was identified in this event can be considered extraneous.
+In order to remove the extraneous results, any 4625 events from the mail server can be filtered out. This filter is not completely accurate, as it also excludes domain accounts that were logging into the mail server, but it is suitable for the purposes of this task.
+7.	Add a filter to remove all 4625 events that were generated by the mail server. Scroll up and select Add filter, and set the following options in the pop-up window. This action accomplishes Step 3 — filter out extraneous results — of the Hunt Analysis steps discussed earlier.
+•	Enter winlog.computer_name into the Field box, and select the first result from the list of three that pops up
+•	Set the Operator to is not
+•	Enter cda-mail.cda.corp into the Value field When finished with the filter, select Save.
+ 
+Figure 3.1-13
+8.	Select Refresh to run the query with the new filter applied. Note the number of hits returned now that the filter is included:
+
+Figure 3.1-14
+The original number of events returned prior to adding the filter was 21,811 — the filter removed 19,952 extraneous events. This large volume of extraneous events can easily obscure the real results of a search.
+ 
+Filtering out this noise — as demonstrated — is an important part of many hunt and investigation activities. Identifying and preventing extraneous results from appearing in search or analysis results is extremely helpful. During a real hunt, the identification and subsequent filtering of extraneous results may need to be performed multiple times in order to sufficiently reduce the amount of noise and to make sure that suspicious patterns can be easily identified in the results.
+Speaking of suspicious patterns, take a look at the Timeline Graph.
+
+Figure 3.1-15
+There is a large spike in the number of 4625 events at ~17:00 on June 14. This spike in login failure events is incredibly suspicious because of the low volume of other results — an overwhelming majority of the login failures that occurred on June 14 happened during this very short time period.
+Investigate this strange spike by using Kibana’s Visualize application, in order to accomplish the ultimate goal presented by the hunt hypothesis.
+9.	Select the Menu Button (three stacked lines) > Visualize.
+
+Figure 3.1-16
+The Kibana Visualize application displays.
+ 
+10.	Select Create visualization.
+
+Figure 3.1-17
+11.	From the New Visualization menu, select Data Table.
+
+Figure 3.1-18
+12.	In New Data Table/Choose a source, enter 4625 into the search bar. Select the 4625 - Mail Server Filtered Out saved search. This is a pre-saved copy of the search run earlier, including the filter for the mail server.
+
+Figure 3.1-19
+ 
+You are now viewing a Data Table of 4625 events. Currently, nothing special has been done to the table, so it only displays a count of how many events are returned in the results.
+
+Figure 3.1-20
+Recall the password guessing hunt hypothesis that was developed earlier:
+CyberButler uses password guessing techniques to attempt to compromise a small set of high- privileged domain user accounts. Because of the password guessing techniques used, most of CyberButler’s login attempts are likely to fail. Therefore, a high volume of login failure events for a single domain user account may be indicative of CyberButler password guessing activity.
+Finally, the ultimate goal of this hunt hypothesis can be executed upon. The saved search successfully limits the results to 4625 events, and filters out the large number of extraneous results that occurred on the mail server. Domain users with a high volume of login events can now be identified via the creation of a bucket within the data table.
+13.	Select + Add in the Buckets section. Select Split rows from the Add Bucket pop-up menu.
+
+Figure 3.1-21
+ 
+14.	Select the following options for the new bucket.
+•	From the Aggregation drop-down, select Terms. Other fields now appear.
+•	Enter winlog.event_data.TargetUserName.keyword into the Field box and select the corresponding option in the list that appears.
+•	Increase the Size to 30.
+
+Figure 3.1-22
+15.	When finished, select Update to update the data table results. The update may take a view seconds.
+16.	View the results in the data table after updating the results to include the new bucket.
+
+Figure 3.1-23
+Each unique winlog.event_data.TargetUserName value now has its own row in the data table. The Count column specifies the number of events containing a given TargetUserName value. Clearly, the jess.whitney account makes up the overwhelming majority of the 1,859 login failure events that occurred on June 14.
+At this point, a sufficient amount of evidence has stacked up to indicate that this account was probably the victim of a password guessing attack. The evidence uncovered so far includes a large spike of logon failure events within a short time frame, and a small number of accounts making up a majority of the logon failure events (just the jess.whitney account in this case).
+Now that likely MCA has been identified, further investigation needs to occur in order to determine if this activity can truly be traced back to an attacker. As stated in the tactical plan, this is the responsibility of the CDA Corp IR team. However, the IR team requested information about the endpoints involved in any MCA that was identified.
+ 
+17.	Add an additional bucket to the data table by selecting + Add below the bucket that you created. Select Split rows from the pop-up menu.
+
+Figure 3.1-24
+18.	Enter the following information into the fields of the new bucket:
+•	Select Terms for the Sub aggregation field. Other fields now appear.
+•	Enter winlog.event_data.IpAddress.keyword into the Field box. Select the first option in the list that appears.
+•	Increase the Size to 10.
+
+Figure 3.1-25
+19.	When finished, select Update to update the data table results. The update may take a few seconds.
+The data table breaks results into different buckets based on unique TargetUserName and
+IpAddress values.
+
+Figure 3.1-26
+ 
+JOB SHEET 3-1-5
+
+
+PLANNING AND EXECUTING A HUNT MISSION
+Workflow
+1.	Navigate back to Discover by selecting the Discover - Elastic bookmark.
+
+Figure 3.1-29
+2.	Select Open.
+
+Figure 3.1-30
+3.	Enter 4625 into the Search within Open search. Select 4625 - Mail Server Filtered Out to open the pre-saved search.
+
+Figure 3.1-31
+4.	Using the date-time picker, set the start time to Jun 14, 2021 @ 00:00:00.000 and the end time to Jun 21, 2021 @ 00:00:00.000. Select Update when finished to rerun the query. It takes several seconds to complete.
+
+Figure 3.1-32
+ 
+The Timeline Graph appears to show another, much smaller spike in 4625 events that occurred on June 15. This is likely the suspected password spraying attack that was identified in the Visualize application.
+
+Figure 3.1-33
+Additionally, this graph shows that the only other occurrence of note is the large spike in login failure events on June 14, which has already been attributed to MCA.
+
+CLEAR
+A.	INTRODUCTION
+Clear is the Cyber Protection Team’s (CPT) core function in which the threat is identified and a response is necessary. This phase is often preceded by a hunt operation, which is initiated by intelligence or indicators that Malicious Cyberspace Activity (MCA) is present in a mission partner’s network. The confirmation of this activity in a hunt operation leads directly to a clearing operation in which all traces of adversary presence and persistence must be eradicated to return the network to a safe and stable state.
+Estimated time to complete: 2.0 hours
+
+B.	ENABLING OBJECTIVES
+Upon successful completion of this section, you will be able to:
+3.2.1	IDENTIFY Explain how CPTs function when responding to incidents
+3.2.2	IDENTIFY Incident Response (IR) tools and capabilities
+3.2.3	DISCUSS common processes
+
+C.	TOPIC OUTLINE
+•	Detect malicious compromise through Kibana and System Monitor (Sysmon) logs
+•	Contain by taking the affected system off the network
+•	Remove malware from infected host
+•	Restore connectivity to an endpoint
+
+D.	TOOLKIT
+
+Kibana
+
+Kibana is a web-based User Interface (UI) to Elasticsearch data. In a Security Onion distribution, this is the most user-friendly method of navigating the numerous security logs collected into the monitoring tool’s Elastic Stack.
+ 
+PowerShell Integrated Scripting Environment (ISE)
+
+
+PowerShell ISE is a scripting and development environment bundled with some versions of PowerShell. This scripting environment assists for the production of scripts with some helpful features, such as syntax highlighting and autocompletion.
+CMD.exe
+
+CMD is the Windows interactive command line shell.
+Sysinternals
+
+Microsoft Sysinternals troubleshooting utilities are a suite of tools to perform a wide variety of troubleshooting tasks for Windows clients and servers.
+ 
+INFORMATION SHEET 3-2
+
+
+LESSON 2 — CLEAR
+
+Introduction to Clearing
+Clearing is “an operation to target and engage MCA to eliminate or neutralize it from a network or system.” Cyber Warfare Publication (CWP) 3-33.4:
+Clear is normally used relative to the removal of barriers or obstacles in mobility operations or the deconfliction of targets for engagement. In the context of CPT operations, clear is defined as an operation to target and engage MCA in order to eliminate or neutralize it from a network or system, and may include actions to interdict, contain, disrupt, or degrade MCA. The CPT clear function occurs when the supported or supporting commander directs the CPT to eliminate or neutralize the identified threat on the network or system. CPTs may also be directed to take other actions against identified threats rather than clearing them.
+The process of conducting a clearing operation through mission partner networks and systems occurs after a hunt operation or threat intelligence identifies MCA. Prerequisite to conducting the clearing operation, a CPT should determine the full scope of the intrusion, both functionally and physically, so that the threat and damage is fully characterized prior to recommending that the clear operation proceed.
+According to National Institute of Standards and Technology (NIST) Special Publication (SP) 800.61r2, the IR lifecycle consists of four phases.
+•	Preparation
+•	Detection and Analysis
+•	Containment, Eradication, and Recovery
+•	Post-incident Activity
+
+Figure 3.2-1 — The NIST IR lifecycle
+ 
+Prior to execution of a clear operation, the planning process consists of the following steps. These steps correspond to the Preparation and Detection phases of an IR cycle:
+1.	Gain and maintain contact with the MCA
+2.	Consult with Subject Matter Experts (SME) to determine methods and intent behind MCA
+3.	Engage with mission partner Cybersecurity Service Providers (CSSP) to assist with an IR plan
+4.	Make a risk mitigation decision based on the benefits or consequences of continuing hunt operations versus initiating clear operations
+Once a clear operation is approved, a CPT performs the following, as directed or tasked:
+1.	Contain affected systems and networks simultaneously to prevent adversary repositioning.
+2.	Neutralize and eradicate adversary activities in each network or system
+3.	Observe and characterize adversary behavior and Tactics, Techniques, and Procedures (TTP) to enable follow-on operations (i.e., enable hardening)
+4.	Enable recovery or restoration of affected systems and networks
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Gain and Maintain Contact
+During the prerequisite phase of clearing operations, which corresponds to the Preparation and Detection steps of the IR lifecycle, Cyber Defense Analysts (CDA), in a deliberate hunt operation or after given actionable threat intelligence, use a working knowledge of normal operations and patterns in an organization to determine deviations from that baseline, and characterize those anomalies as incidents or not. A variety of tools and techniques are employed, such as monitoring software, log and error message aggregation, querying platforms, and security systems (e.g., Network Security Monitors [NSM], firewalls, and Intrusion Detection Systems [IDS]).
+If an event appears to be an incident after identification and analysis, it is important to report it quickly and respond according to organizational procedures and standards.
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Detect Malicious Compromise Through Kibana and Winlogbeat Logs
+The MCA is detected as part of the Detection and Analysis step of IR. While these steps are taken prior to a clear operation occurring, they provide the CDA performing the containment and eradication important knowledge which is used during the operation. In this case, Sysmon and
+ 
+winlogbeat have been deployed on the mission partner’s network for log collection and aggregation, and those logs have been ingested into Kibana — as an analytic platform.
+Perform queries on Kibana to identify unusual activity that is likely MCA.
+[See Job Sheet 3-2-1]
+The 210.210.210.0/24 subnet is outside this organization. A possible network compromise has been detected using monitoring tools. Contain the breach.
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Contain Affected Systems and Networks Simultaneously
+After detection has confirmed a likely incident, the system should be contained for further investigation and remediation. Containment limits the extent of any damage a breach may have already initiated, such as data exfiltration or damage to production systems.
+Containment isolates a known compromise. If the adversarial actors have proceeded no further than the affected systems, the remainder of the network is protected. When this affects production servers, backup plans need to be initiated in parallel with network containment.
+Systems may be so fully affected by a breach that the only option to contain the compromise is to never restore the system to production. Instead, a full system restore from backup is conducted, so only a clean image is returned.
+Workflow
+If cda-acct-1 is indeed affected by MCA, the first step is to contain the MCA by taking the affected system off the network. This requires physically going to the terminal for that system and unplugging any network cables. Since that physical separation is not possible in this task, turn off networking from the lab view of the machine that is available.
+[See Job Sheet 3-2-2]
+There is nothing listed other than the commands in the current session.
+Adversaries often wipe history records to subvert attempts like these to discover their methodology, but it is worth trying to catch ill-prepared attackers.
+NOTE: If this operation was a formal investigation and the necessary tools and accesses are available, one would create a full disk image and a memory dump for forensic investigation. The process for making such a forensic copy of the hard disk is covered in future lessons.
+
+Knowledge Check
+[See PCTE Knowledge Check]
+ 
+Neutralization and Eradication of MCA from Affected Systems
+The objective of a clear operation is the quarantine, withdrawal, or destruction of identified threats from the network or system. This is the key phase in accomplishing that objective.
+After a system is contained, responders conduct the actual removal of compromised artifacts and any persistence that an attacker may have left behind. In this task, documentation is vitally important. If a threat actor is targeting the organization, the actor may use similar tools and techniques elsewhere. Identifying how the actor is working on this system may provide clues as to how they intend to attack others.
+This is also an exhaustive process and should never be done from memory or through pure intuition. Use established organizational Standard Operating Procedures (SOP) and industry- proven checklists in investigating the system.
+This task helps understand the steps necessary in removing malware from a system. However, the surest and most thorough cleaning is through a complete reimaging of the affected system.
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Identifying Malware on Infected Hosts [See Job Sheet 3-2-3]
+PowerShell
+PS C:\Windows\system32> Get-Process
+
+Figure 3.2-20
+Windows has a number of processes running in the background by default to create a fluid and functioning Operating System (OS). With time and familiarity with the OS, an analyst becomes familiar with what looks normal and what looks out of place. In future lessons, many of these under-the-hood processes and services are explained more fully. For now, only a rudimentary understanding of what normal looks like is necessary.
+Note that among the process list, the Firefox web browser is listed.
+ 
+Web browsers normally have UI windows associated with them so that the user can browse the internet. This process running in the background is suspicious because it is acting outside of its normal behavior. Threat actors often hide their own malicious activity under the name of a familiar and seemingly innocuous process that is likely to be running on a victim system. Since Firefox was not opened by the normal user, kill it.
+[See Job Sheet 3-2-4]
+Remove Implant-related Files [See Job Sheet 3-2-5]
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Removing Malware from Infected Host
+A new PowerShell script was found. An innocuous profile script related to the default PowerShell configurations was also found. Opening this file in Notepad shows that it also contains a script to call back to the malicious IP address. It also has a creation time and date in close proximity to the other malicious script. It appears that the threat actors added innocuous padding to the file to prevent its signature from being identical to the first, but analysis of the code reveals that it accomplishes the same intent.
+
+Figure 3.2-24
+[See Job Sheet 3-2-6] Remove Hosts Entries
+The hosts file is the first point of lookup for DNS hostname resolution, so a common adversarial technique for exploitation and re-exploitation is to modify the endpoint hosts file, in order to route traffic to malicious infrastructure. Examine the file to determine whether the malicious actor tampered with it.
+[See Job Sheet 3-2-7]
+ 
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Cleaning Windows Hosts File
+The adversaries associated their own IP address with the locahost domain which is clearly a misspelling of localhost.
+
+Figure 3.2-26
+Hiding the entry as a misspelling of the very common localhost is a weak form of obfuscation applied to this technique. It also exploits the human vulnerability of mistyping domains. This is often exploited in the technique Domain Squatting, in which a threat actor obtains the domain of a slight misspelling of a common object of normal web browsing activity in the target domain.
+For example, if the target domain frequently browses to
+www.google.com
+the threat actor may squat — if the domain is available — on the common misspelling:
+www.goggle.com
+1.	Delete the suspicious entries.
+2.	Save and close the file in Notepad.
+ 
+Autorun Registry Keys [See Job Sheet 3-2-8]
+Autorun keys are locations in the Windows registry, which is a database of settings that the OS uses. These indicate which processes or services automatically start when a system boots or a user logs in. They are particularly valuable because if a user restarts the machine, an attacker does not lose access, like they would if they only existed in memory. The Windows boot process restarts their access by running processes stored in the Autorun keys.
+
+Figure 3.2-27
+
+Figure 3.2-28
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Remove Registry Entries
+Having discovered a number of persistence mechanisms which the adversary has left behind in the Windows registry, eradicate the adversary foothold by deleting the malicious entries.
+[See Job Sheet 3-2-9]
+Normally, this runs userinit.exe to execute logon scripts, reestablish network connections, and start Explorer.exe. An adversary can manipulate this key to ensure that their malicious script or executable is run first.
+ 
+A normal entry looks like this:
+
+Figure 3.2-31
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Restore Registry Entries
+NOTE: The steps continue from the previous task. The attacker has prepended a malicious script.
+ 
+Figure 3.2-32
+[See Job Sheet 3-2-10]
+
+Recovery
+Return the compromised systems to the production environment, but do so while continuing to closely monitor all network and host activity on the machine in case something was missed or the system is reinfected.
+ 
+If the initial compromise was the result of a software or OS vulnerability, then the vulnerability needs to be patched before bringing the system back online to prevent future exploitation.
+Ultimately, the production system owners and stakeholders set the timeline and priority for reintegration, but where a responder is able to advocate, it should be for maximum testing, extensive monitoring, and thorough validation prior to any restoration.
+The primary goal in this phase is to prevent re-compromise of the organization.
+Return Machine to the Network [See Job Sheet 3-2-11]
+The machine is back online and capable of standard operation. Remember that this is often only a technique to return mission critical systems to production in a timely manner. The safest way to restore a system is to revert to a clean snapshot or clean image, and restore data from backup servers. After a breach such as this, these systems must continue to be closely monitored to detect any further adversarial activity.
+
+Conclusion
+A successful clearing operation swiftly and precisely contains MCA, eradicates that activity and any of its artifacts or references, and returns all affected systems to a clean state or fully restores that system from a known good backup if necessary eradication is not possible in place.
+ 
+JOB SHEET 3-2-1
+
+
+CLEAR
+Workflow
+1.	Log in to the cda-win-hunt Virtual Machine (VM) using the following credentials:
+Username: trainee
+Password: Th1s is 0perational Cyber Training!
+2.	Open Google Chrome.
+3.	Select the Security Onion bookmark and log in to the Security Onion web console using the following credentials:
+Username: onion@cda.corp
+Password: Th1s is 0perational Cyber Training!
+NOTE: In analyst workstations where users have previously logged in to Security Onion, these credentials may be cached and the browser proceeds directly to the web interface in the next step.
+
+Figure 3.2-2
+ 
+3.	Select Kibana from the menu button (three stacked lines).
+
+Figure 3.2-3
+When Kibana loads, the landing page is known as a dashboard. It is helpful both now and in future lessons to be familiar with this interface, so take the time to select a variety of views and see what data is returned using that filter.
+
+Figure 3.2-4
+ 
+4.	To see which events have been collected about processes created on individual hosts in this domain, an analyst could search through data in the Hosts dashboard, Sysmon events dashboard, and process.create Sysmon events dashboard.
+
+Figure 3.2-5
+5.	Navigate to the Discover dashboard by opening the navigation menu in the top left hand corner.
+
+Figure 3.2-6
+
+Figure 3.2-7
+ 
+This Discover view is a query platform allowing powerful searches of all logs collected by the Security Onion nodes deployed in the mission partner’s network.
+All source analysts supporting this CPT have informed the team that Advanced Persistent Threat (APT) 19, which is known to use phishing scams to steal valid credentials and employ PowerShell to execute malicious payloads, may be at work in this environment. Reporting indicates that this attack occurred between 17 May 2021 and 21 May 2021.
+Intel request: APT19 using Phishing and PowerShell execution, such as in this link:
+•	https://www.fireeye.com/blog/threat-research/2017/06/phished-at-the-request-of- counsel.html
+•	https://attack.mitre.org/groups/G0073/
+6.	Set the query date range by selecting Show Dates. The default setting is the Relative range A day ago to now.
+7.	Change Relative to Absolute, and set the date range from May 17, 2021 @ 21:05:00 to May 21, 2021 @ 21:06:00.
+
+Figure 3.2-8
+8.	Search through the dataset of logs collected during this date range to find instances of PowerShell running on domain machines. Run the following query to perform the search: process.executable: “PowerShell.exe”
+ 
+NOTE: The process.executable field is specific to the Sysmon logs sent to Security Onion by host winlogbeat agents in the domain.
+
+Figure 3.2-9
+While the results may not be normal user activity, they are within the realm of possibility for scheduled tasks or administrative updates. However, any instance of PowerShell making outgoing network connections is suspicious, especially if they are outside the protected private network.
+9.	Run the following query to determine if there are any other questionable actions occurring:
+process.executable: “PowerShell.exe” and event.action: "Network connection"
+
+Figure 3.2-10
+Even this query produces too much noise.
+ 
+10.	Filter out destination Internet Protocol (IP) addresses corresponding to the mission partner network (as this may be friendly network administrator activity) and known safe hosts (such as the Windows private IP address range).
+process.executable: PowerShell.exe and event.action: "Network connection" and not destination.ip:169.254.0.0/16 and not destination.ip:174.16.0.0/16 and not destination.ip:172.16.0.0/16
+
+Figure 3.2-11
+The results display a log entry that is suspicious and bears further investigation on the cda-acct-1
+VM.
+11.	Open the questionable item, and examine the IP address where the machine is connected:
+
+Figure 3.2-12
+ 
+JOB SHEET 3-2-2
+
+
+CLEAR
+Workflow
+1.	Log in to the cda-acct-1 VM using the following credentials:
+Username: Administrator
+Password: Th1s is 0perational Cyber Training!
+Note: Notice upon login that several windows are automatically opening without user interaction. This is indicative of automated events occurring in the background. Further investigation into the system, specifically the Windows Registry, will shed light onto why this is happening.
+2.	From the Start menu, enter PowerShell in the Search bar. Right-click PowerShell and select
+Run as Administrator.
+
+Figure 3.2-13
+2a. Alternatively, right-click PowerShell and select Run as Administrator
+
+Figure 3.2-14
+3.	Disconnect from the internet by issuing the following command in PowerShell:
+PS C:\Windows\system32> Disable-NetAdapter -Name "Ethernet0"
+ 
+4.	Select [Y] Yes.
+
+Figure 3.2-15
+The machine can no longer communicate with any other network devices, which also means the adversary is likewise unable to communicate.
+5.	Enter the following PowerShell command to view the command history:
+PS C:\Windows\system32> Get-History
+
+Figure 3.2-16
+ 
+JOB SHEET 3-2-3
+
+
+CLEAR
+Workflow
+While in the cda-acct-1 VM, perform the following analysis.
+1.	From the Start menu, enter cmd in the Search bar. Right-click Command Prompt and select
+Run as administrator.
+
+Figure 3.2-17
+Administrator terminals in both the Windows Command Line (CMD.exe) and PowerShell should be open on the desktop.
+
+Figure 3.2-18
+To examine the processes currently running, use both administrator interfaces and become familiar with the syntax particular to each one.
+ 
+2.	Enter one of the following commands in the appropriate terminal:
+CMD.exe
+C:\Windows\system32> tasklist
+
+Figure 3.2-19
+ 
+
+
+CLEAR
+NOTE: Steps continued from Job Sheet 3-2-3.
+3.	Kill any suspicious process using its Process Identifier (PID) with the command:
+CMD.exe
+C:\Windows\system32> taskkill /pid [Process ID] /F
+PowerShell
+PS C:\Windows\system32> Stop-Process -Id [Process ID] -Confirm -PassThru
+4.	In this case, kill the suspicious Firefox process (if its Identifier [ID] is 1920) with the command:
+PS C:\Windows\system32> Stop-Process -Id 1920 -Confirm -PassThru
+
+Figure 3.2-21
+ 
+
+
+CLEAR
+Files can be found with specific keywords.
+1.	Enter the following command in PowerShell to search for these keywords:
+PS C:\Windows\system32> Get-Childitem -Path C:\ -Include *[keyword]* -File -Recurse -force - ErrorAction SilentlyContinue
+2.	Enter the following command in PowerShell to look for any named backdoors:
+PS C:\Windows\system32> Get-Childitem -Path C:\ -Include *backdoor* -File -Recurse -force - ErrorAction SilentlyContinue
+This command has several parts:
+•	Get-ChildItem: The principle command; it obtains references to each object in the remainder of the query
+•	-Path C:\: The filepath in which to search
+•	-Include *backdoor*: Indicates that the form of results must adhere to the regular expression any character and any file extension before or after the keyword “backdoor”
+•	-File: Indicates that only file objects are accepted
+•	-Recurse: Allows the query to continue to search through subfolders of the primary filepath
+•	-ErrorAction SilentlyContinue: Prevents the screen from being filled with possible errors
+
+Figure 3.2-22
+An analyst can view the American Standard Code for Information Interchange (ASCII) contents of the file with the following commands:
+CMD.exe
+C:\Windows\system32>type "[filename]"
+PowerShell
+PS C:\Windows\system32> Get-Content “[filename]”
+ 
+NOTE: These commands only work well with ASCII data. Attempting them with files formatted differently results in a unreadable output to screen.
+3.	Since this file is an unknown PowerShell script (and terminals sometimes handle valid terminal commands unusually), it is safest to open it with Notepad.
+PS C:\Windows\system32> notepad.exe "C:\Users\Administrator\Favorites\backdoor.ps1"
+
+Figure 3.2-23
+This appears to be a script for restoring a network connection with the offending IP address.
+If a filename is unknown, but a particular file type is suspected, search for all files of that type created or modified since the known time of compromise.
+4.	Run the following command in PowerShell to view the questionable files:
+PS C:\Windows\system32> $FindDate=Get-Date -Year 2021 -Month 05 -Day 17
+Choose at least one day before the compromise (in this scenario, before 18 May 2021) to ensure all possibilities are captured.
+5.	The attacker has shown a propensity to use PowerShell, so search for PowerShell scripts created in the attack window. Run the following command in PowerShell:
+PS C:\Windows\system32> Get-ChildItem -Path C:\ -Include *.ps1 -File -Recurse - ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -ge $FindDate }
+ 
+This command has several parts:
+•	Get-ChildItem: The principle command; it obtains references to each object in the remainder of the query
+•	-Path C:\: The filepath in which to search
+•	-Include *.ps1: Indicates that the form of results must adhere to the regular expression
+any filename (“*”) with a PowerShell extension (“.ps1”)
+•	-File: Indicates that only file objects are accepted
+•	-Recurse: Allows the query to continue to search through subfolders of the primary filepath
+•	-ErrorAction SilentlyContinue: Prevents the screen from being filled with possible errors
+•	|: A pipe; sends all the output of the command prior to it to the command following it
+•	Where-Object { $_.LastWriteTime -ge $FindDate }: A filter that returns only objects that fall within the time windows that were previously established.
+ 
+
+
+CLEAR
+Workflow
+To delete the files, use CMD.exe or PowerShell.
+1. From the Administrator command prompt, enter the following command:
+CMD.exe
+C:\Windows\system32> del "[filename]"
+PowerShell
+PS C:\Windows\system32> Remove-Item “[filename]”
+
+Figure 3.2-25
+NOTE: Multiple files can be deleted at once, but must be comma separated.
+ 
+
+
+CLEAR
+1. From the Administrator PowerShell prompt, run the following command to open the local Domain Name System (DNS) cache:
+PS C:\Windows\system32> notepad C:\Windows\System32\drivers\etc\hosts
+Notice that the attacker added an entry to the file.
+ 
+
+
+CLEAR
+Workflow
+Attackers like to hide persistence mechanisms in Autorun registry keys.
+1.	Check each of the following registry keys:
+CMD.exe
+C:\Windows\system32> reg query [key]
+The Autorun registry keys in reg.exe syntax: HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\RunOnce HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run HKEY_LOCAL_MACHINE\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Run HKEY_CURRENT_USER\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\RunOnce
+NOTE: HKEY_CURRENT_USER (HKCU) and HKEY_LOCAL_MACHINE (HKLM).
+PowerShell
+PS C:\Windows\system32> Get-ItemProperty -Path [key]
+The Autorun registry keys in PowerShell syntax are: HKCU:\Software\Microsoft\Windows\CurrentVersion\Run HKCU:\Software\Microsoft\Windows\CurrentVersion\RunOnce HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Run HKCU:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\RunOnce
+ 
+
+
+CLEAR
+Workflow
+To delete unwanted registry values, use CMD.exe or PowerShell.
+1.	From the administrator command prompt, enter the following command:
+CMD.exe
+C:\Windows\system32> reg delete "[Registry Key]" /v "[Value Name]"
+
+Figure 3.2-29
+PowerShell
+PS C:\Windows\system32> Remove-ItemProperty -Path "[Registry Key]" -Name "[Value Name]"
+
+Figure 3.2-30
+NOTE: Query the value again after deleting to ensure that the registry is in a planned state. Another persistence location in the Windows registry is the userinit value of the winlogon key.
+2.	Check the userinit value of winlogon using PowerShell:
+PS C:\Windows\system32>Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+ 
+
+
+CLEAR
+NOTE: Steps continued from Job Sheet 3-2-9.
+3.	Instead of deleting the entry, restore it to its default state with the following PowerShell command:
+PS C:\Windows\system32> Set-Itemproperty -path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'Userinit' -value 'C:\Windows\system32\userinit.exe,'
+
+Figure 3.2-33
+ 
+JOB SHEET 3-2-11
+
+
+CLEAR
+Workflow
+1.	Add a firewall rule to block the offending address from the machine (and duplicate this on all machines in the network) using the following PowerShell command:
+PS C:\Windows\system32> New-NetFirewallRule -DisplayName "Block Adversary IP address" - Direction Outbound –LocalPort Any -Protocol TCP -Action Block -RemoteAddress 210.210.210.9
+
+Figure 3.2-34
+NOTE: This firewall rule should be duplicated at the network border as well. In the mission partner network, which uses Vyatta routers and firewalls, the appropriate commands are: configure
+set firewall name MCA-DENY default-action 'drop'
+set firewall name MCA-DENY rule 1 source address 210.210.210.0/24 set interfaces ethernet eth2 firewall in name "MCA-DENY"
+commit save exit
+This creates a new policy, a new rule for that policy, and applies that policy to the existing internet-facing interface — all of which is explained further in the next lesson on Hardening
+ 
+2.	After all persistence mechanisms of the attack are effectively removed and the attackers blocked, restore connectivity using the following PowerShell command:
+PS C:\Windows\system32> Enable-NetAdapter -Name "Ethernet0"
+
+Figure 3.2-35
+
+ENABLE HARDENING
+A.	INTRODUCTION
+This lesson covers the enable hardening Cyber Protection Team (CPT) core function. A core function of a CPT is the capacity to enable hardening of specified terrain in cyberspace from threat-specific unauthorized activities by reducing attack threat surfaces to increase difficulty of access and system exploitation. Trainees will learn about key concepts and tools they will use during the enable hardening function, examine a network’s security posture, and enable hardening of that network in this lesson.
+Estimated time to complete: 2.0 hours
+
+B.	ENABLING OBJECTIVES
+Upon successful completion of this section, you will be able to:
+3.3.1	EXPLAIN how CPTs function when defending customer networks
+3.3.2	IDENTIFY Defensive Cyberspace Operations (DCO) tools and capabilities
+3.3.3	DISCUSS DCO processes and procedures
+
+C.	TOPIC OUTLINE
+•	Enable hardening
+•	Relevant cybersecurity principles
+•	Assessing current organizational security posture
+•	Hardening basics
+•	Tools (Deployable Mission Support System [DMSS] toolkit)
+
+D.	TOOLKIT
+
+PowerShell
+
+PowerShell is a language used for systems administration, task automation, and configuration. It consists of a command-line shell and associated programming language.
+Microsoft Local Group Policy Editor
+The Local Group Policy Editor is a Microsoft Management Console (MMC) snap-in that is used to configure and modify group policy settings within Group Policy Objects (GPO).
+ 
+VyOS
+
+Vyatta Operating System (VyOS) is an open-source platform for network devices that includes, but is not limited to, firewall and routing services.
+ 
+INFORMATION SHEET 3-3
+
+
+LESSON 3 — ENABLE HARDENING
+
+Enable Hardening
+As described in Cyber Warfare Publication (CWP) 3-33.4,
+“For Official Use Only (FOUO) Adversary exploitation will require technology or process updates to mission partner networks and systems to mitigate them. CPTs will maintain and update network or system hardening recommendations for the duration of hunting and clearing operations. Commanders will be notified when critical vulnerabilities arise, and whether those vulnerabilities will be mitigated in-stride to increase network or system security and resilience. Pre-approved actions, and those actions requiring further approval(s), will be identified and presented during pre-mission planning. CPTs will recommend hardening actions and report on network or system hardening recommendations to mitigate threat-specific risks to supported commanders, CyberSecurity Service Providers (CSSP), and local network and system protectors upon conclusion of operations.
+Department of Defense Area of Operation (DODIN AO) commanders and directors, local network owners, local network defenders, and CSSPs maintain the responsibility to determine available data, develop plans to mitigate gaps, and implement required updates or hardening measures recommended by CPTs. CPTs will advise and assist, but should not be the primary entity performing protection duties expected of DODIN AO commanders and directors, local network owners, local network defenders, or CSSPs.”
+Mission Relevant Terrain in Cyberspace (MRT-C) and Key Terrain in Cyberspace (KT-C) are an especially important focus during the hardening phase. MRT-C and KT-C will be determined during mission planning.
+“(FOUO) The end state of the hardening function is to mitigate risk of adversary exploitation, or reduce it to levels acceptable to network or system owners.” CWP 3-33.4
+
+Relevant Cybersecurity Principles
+This lesson lays out general cybersecurity principles and publications and their relation to hardening DODIN.
+A Cyber Defense Analyst (CDA) needs to be aware of specific general cybersecurity principles and policies to be successful during the hardening function.
+Federal Information Systems Management Act (FISMA) requires every federal agency to develop, document, and implement a security policy for information and information system assets throughout the agency. FISMA outlines a risk management based process for cost effective security.
+ 
+Standards are formal, mandatory requirements an organization must meet for actions, processes, or configurations. A common collection of standards a CDA may encounter is the Federal Information Processing Standard (FIPS), which was developed by the National Institute of Standards and Technology (NIST) in response to FISMA. It defines the standards for non- national security systems. An example of a standard is the Secure Hash Standard (part of FIPS), that specifies which hashing algorithms organizations are allowed to use to generate message digests.
+Baselines define minimum levels of security that every system within an organization must meet. The Defense Information Systems Agency (DISA) has several Security Technical Implementation Guides (STIG) that Department of Defense (DoD) systems must comply with, which provide security baselines for Operating Systems (OS) and software. The STIG Viewer tool allows analysts to view STIGs that are applicable to specific systems running specific software. It is available on Windows, Linux, and MacOS.
+Guidelines are recommendations on a course of action to best meet specified requirements. NIST has developed several guidelines in their Special Publications (SP), which lay out best practices for several processes. There are several SPs that a CDA may find useful while hardening within the SP 800 series including, but not limited to:
+•	SP 800-53: Catalog of security and privacy controls for federal information systems
+•	SP 800-40: Relates to patch management
+•	SP 800-41: Relates to firewall configuration
+•	SP 800-123: Relates to central server security
+Excerpt from SP 800-53
+ID	FAMILY	ID	FAMILY
+AC	Access Control	PE	Physical and Environmental Protection
+AT	Awareness and Training	PL	Planning
+AU	Audit and Accountability	PM	Program Management
+CA	Assessment, Authorization, and Monitoring	PS	Personnel Security
+CM	Configuration Management	PT	PII Processing and Transparency
+CP	Contingency Planning	RA	Risk Assessment
+IA	Identification and Authentication	SA	System and Services Acquisition
+IR	Incident Response	SC	System and Communications Protection
+MA	Maintenance	SI	System and Information Integrity
+MP	Media Protection	SR	Supply Chain Risk Management
+Table 3.3-1
+ 
+Defense-in-depth is a practical strategy developed by the National Security Agency (NSA) that employs a layered approach including people, technology, and operational capabilities that establishes barriers to attacks to achieve information assurance. Notice in NIST’s SP 800-53, hardening is achieved not just through technical controls such as assessment, authorization, and monitoring, but also accounts for personnel security such as training and program management as well as physical security. If one layer fails, then the next layer can still safeguard the systems and the networks from harm. In system and network hardening, defense-in-depth is a key concept employed extensively in DODINs.
+
+
+Figure 3.3-1 — Courtesy Power Magazine/Kudelski Security
+
+Assessing Security Posture and Making Recommendations
+In this discussion, learn how CPTs can assess a mission partner’s current security posture and the documents for making and recommending changes.
+Observe the documentation below, which provides context and situational awareness for the mission partner and enables the CPT to make hardening recommendations:
+Supported Organization Mission and Resources help the CPT gain a Common Operating Picture (COP) of the mission partner’s current security posture. This includes, but is not limited to, network and system logging, configuration, current security procedures, etc.
+AO Logical Maps or Network Maps are the principle documents for terrain visualization of mission partner networks and systems (from CWP 3.33-4). Generally, this is a Microsoft Visio document or a Draw.io document.
+Detailed Threat Assessment Reports cover the historic attacks against the mission partner, probable threat actors they would see in their AO, likelihood of threat activity/capability used against them, and the threat matrix (criteria/heat map) showing their ability to detect and counter them (from CWP 3.33-4).
+ 
+CPTs issue or provide input to the following reports after hardening a mission partner network (from CWP 3.33-4):
+•	Detailed Host Vulnerability Finding and Corrective Actions Report: Covers patch management and outdated software vulnerabilities, services, and detailed vulnerability scanner results (e.g., results from Assured Compliance Assessment Solution [ACAS] and misconfigurations).
+•	Detailed Network Vulnerability Findings and Corrective Actions Report: Covers at least the following elements, if applicable — proper sensor placement, signature management, firewall implementation, firmware vulnerabilities, ports/protocols, access control lists, or infrastructure configurations.
+•	Detailed Non-Technical Vulnerability Findings and Corrective Actions Report: Covers policy assessment from NIST SP 800-53 and mission partners utilizing intelligence to inform DCO.
+•	Risk Mitigation Plan (RMP): Documents all vulnerabilities identified during threat mitigation. This document includes recommendations for internal and external mitigation actions to reduce the overall risk to the secured network. This is further discussed in upcoming lessons.
+
+Identifying Host and Network Areas for Hardening
+This section discusses how and where analysts should focus their efforts during hardening.
+CDAs may vet several areas for risks. NIST SP800-53 provides an overarching checklist for high-level categories as mentioned previously. However, CDAs primarily evaluate these areas:
+•	Web-facing Assets/Infrastructure: These devices contain resources that are accessible to an external and internal user. This duality means that devices in this network are untrusted. Internal users are allowed to connect in, but devices within the Demilitarized Zone (DMZ) are restricted from initiating connections into the private network.
+•	Network Boundary: A network boundary is where one logical network meets another. In the case of a private network and the open internet, this may be different organizational networks connecting, etc. It is generally wise to deploy boundary defense mechanisms in this area such as firewalls, Network Intrusion Detection System (NIDS), or Network Intrusion Prevention System (NIPS).
+•	Network Segmentation: In simple terms, network segmentation is grouping devices into zones, often by function or access requirements, and putting them in their own network. Access controls are often applied between segments to restrict access into more sensitive segments.
+•	Inventory of Systems: Organizations should have an inventory system to track their assets. This includes devices such as phones and printers. An accurate inventory is essential for implementing the correct security controls.
+•	Domain Architecture and Services: In reference to Microsoft Active Directory (AD) service, AD hosts a number of Windows services facilitating centralized identity management, object access, and policy management across Microsoft AD trees and forests. Because of their orchestrating role, protecting critical components of domains (e.g., enterprise and domain administrators and Domain Controllers [DC]) is crucial.
+ 
+•	User Rights Management: Users should always be given the least amount of privilege necessary to complete their assigned work roles. This is often achieved by assigning users into groups depending on their job duties.
+•	Endpoint Configuration: Secure configurations on the endpoints rely on processes such as update and patch management, software management, etc. A good practice for endpoint configuration is developing a common secure baseline image.
+•	Logging and Detections: Audit policy is dependent on regulation and organizational requirements. However, auditing is key in detecting incidents and determining the extent of damage. Without auditing, breaches would be excessively difficult, if not impossible, to assess.
+In Windows environments with DCs, host hardening is done centrally in AD by using GPOs. GPOs govern access to services on the network, user rights management, endpoint configuration, firewall configurations, logging, and a plethora of other functionality. GPOs are covered in depth in a later lesson, however, a lab in this lesson allows you to experiment with GPOs locally.
+Consult the NIST SP 800 series for guidelines and best practices for these devices, as well as STIGs, to ensure that systems and network devices meet security baselines. Once you understand the mission partner's operational cyberspace, recommend changes. The goal is to:
+•	Propose network architecture changes to improve security and reduce risk
+•	Ensure unnecessary services are disabled
+•	Ensure latest patches are installed
+•	Remediate insecure configurations
+•	Audit installed software
+•	Enforce an audit policy
+•	Enhance security systems and logging
+Tools
+This section discusses tools from the DMSS toolkit that are helpful during hardening. The categories covered are platforms, host utilities, vulnerability scanners, and Security Information Event Management (SIEM) solutions.
+Platforms or distributions are base OSs with preinstalled software, typically for a specific purpose. Some specific cyber defense platforms that CDAs may encounter:
+•	Security Onion: A free and open source platform for network security monitoring, threat hunting, enterprise security monitoring, and log management. It comes with several tools mentioned in this lesson including Kibana, Zeek, Suricata, and other utilities. CDAs interacted with this platform in the previous lesson.
+•	Response Operation Collection Kit Network Security Monitor (ROCK NSM): ROCK NSM provides a robust platform for passive data acquisition, transit, and data storage and indexing. Like Security Onion, it comes with Kibana, Zeek, Suricata, and other utilities.
+ 
+Windows hosts make up a large portion of many DODIN networks. Due to Microsoft’s market dominance, CDAs should have a foundational understanding of how to harden Windows hosts. These tools help with the hardening process:
+•	Sysinternals: A suite of over 65 tools for troubleshooting Windows OS. CDA analysts may be familiar with Process Explorer, Process Monitor, and Sysmon.
+•	Windows PowerShell: Object-oriented scripting utility that is tightly integrated with the Windows OS and AD. Windows PowerShell is an incredibly useful tool when enumerating Windows ADs and Windows hosts.
+•	Microsoft Baseline Security Analyzer: A deprecated vulnerability scanner for Windows systems pre-Windows Server 2008 R2. Its capabilities include ensuring security updates are up to date, checking for Structured Query Language (SQL) Server and Internet Information Services (IIS) administrative vulnerabilities, and verifying password complexity. Its successor is the Windows Update service.
+Network Security Monitors (NSM) detect and often respond to network attacks. CDAs need familiarity with:
+•	Zeek: Formerly known as Bro, Zeek is an open source network security monitor. It sits on a sensor in the network that observes network traffic and generates robust logging that is forwarded to a SIEM like Splunk or Elasticsearch.
+•	Suricata: A free and open source robust network threat detection engine. It is capable of real time intrusion detection, in-line intrusion prevention, network security monitoring, and offline network capture processing.
+SIEMs play an essential role in the hardening function as they enable rapid detection of future incidents.
+•	Splunk: A proprietary software platform widely used for monitoring, searching, and data visualization especially in relation to logging data in real time.
+•	Kibana: A data visualization tool generally deployed in a stack along with Elasticsearch and Logstash. Elasticsearch is a free and open source databasing and visualization tool used in conjunction with Security Onion or ROCK NSM. CDAs briefly interacted with Kibana in the previous lesson, and explore this tool in-depth later.
+CDAs need familiarity with the following vulnerability scanners:
+•	ACAS: This is the mandated enterprise vulnerability scanning capability utilized for assessing DODINs such as Non-classified Internet Protocol Router Network (NIPRNet) and Secret Internet Protocol Router Network (SIPRNet).
+•	RedSeal: A security solution capable of assessing cloud environments as well as application-based policies and endpoints.
+•	Open Vulnerability Assessment System (OpenVAS): A successor to Nessus, OpenVAS is a robust open source vulnerability scanner that is part of the commercial Greenbone Security Manager. Its capabilities include authenticated and unauthenticated testing, industrial and internet protocols testing, and an internal programming language for implementing any type of vulnerability scan.
+ 
+Assessing Network
+The mission partner charged the CPT with hardening their network. The mission partner provided the network map and asked for recommendations for improving their perimeter and core network devices. As attacks from Advanced Persistent Threats (APT) became more frequent, the mission partner wanted to reduce their attack surface and reduce the amount of incidents occurring within their network.
+NOTE 1: Please ignore anything that references the 10.10.0.0/16 network. This is a management network that is used for range configuration and is outside the scope of the lab.
+NOTE 2: Typically the internet facing interface will have a public Internet Protocol (IP) address. Due to range configuration purposes, the internet facing interface has a private IP.
+The first device investigated is the border router. As it is the only ingress point into the network, the cda-firewall Virtual Machine (VM) is a good place for perimeter security. As the DMZ is connected to an interface on this device, observe controls in place for accessing the web-facing assets and at the network boundary.
+[See Job Sheet 3-3-1]
+A good practice is to disable any unused interfaces on the device even if it is not connected to anything, especially in the case of routers and switches. This prevents attackers from plugging cables in and directly connecting to the device.
+Everything is in order and reflects the information provided by the mission partner in the network map.
+[See Job Sheet 3-3-2]
+No firewall rulesets are present on the core router, which is cause for concern. From the network map, there are assets that the public internet can access, but the rest of the network should be off- limits. Rules restricting access to the private network from the DMZ and from the internet are necessary. Firewall rules are lacking at the network boundary.
+[See Job Sheet 3-3-3]
+ 
+Notice a few things from the configuration:
+•	The interface block shows interface specific configurations.
+•	The interfaces have minimal configurations.
+•	There are no firewall rules applied to any interfaces, which is not a surprise considering there are no firewall rulesets configured.
+
+Figure 3.3-4
+Source and destination Network Address Translation (NAT) are implemented. While the NAT’s primary purpose is not meant to be security, it has the added benefit of preventing internet devices from initiating connections with internal hosts, which greatly reduces the attack surface.
+
+Figure 3.3-5
+
+Figure 3.3-6
+ 
+Simple Network Management Protocol (SNMP) and SSH are enabled. Remote administration is possible. The SNMP protocol should be disabled, if not in use, as it allows attackers to read configuration settings and gain various other information from the device. If not actively used, then extra services should be disabled. The mission partner mentioned administrators using SNMP to gather metrics on routing devices, and using SSH to remotely manage their devices.
+
+Figure 3.3-7
+The router is logging events, but only locally. If the mission partner wants to be able to easily detect scanning and mapping activities, then enable remote logging. As this is the only device with an interface and a public IP in the network, most scanning happens here.
+
+Figure 3.3-8
+While not included in this particular firewall configuration, NetFlow is another network monitoring capability that can be configured. NetFlow data is forwarded to a collector, then viewed in an application to allow an analyst to view traffic trends and statistical data. An example of SolarWinds — a popular NetFlow analysis tool — is shown below in Figure 3.3-9, but it is not available for use in this lab environment.
+
+Figure 3.3-9
+[See Job Sheet 3-3-4]
+ 
+Notice this router has firewall rules in place. Each rule details a specific function:
+•	Rule 10 — Allows workstations to communicate with the CDA-SERVERs
+•	Rule 20 — Prevents the Accounting (ACC) and Human Resources (HR) networks from communicating with each other
+•	Rule 30 — Allows both devices to communicate with the logging host in the security network
+•	Rule 40 — Allows all other types of traffic
+From the firewall output, recognize that rules exist governing access between the HR and the ACC network. However, for rules to enforce access, they must be applied.
+[See Job Sheet 3-3-5]
+The interface output indicates that firewall rules are being used and that eth4 is administratively disabled. As a follow up to the last step, from this output, note that the network is segmented and access between them is secured properly.
+
+Figure 3.3-12
+Remote logging is enabled on this device to the logging device in the security subnet, which is good.
+
+Figure 3.3-13
+ 
+
+ 
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Remediating Network
+A few glaring issues are discovered in the mission partner’s security posture. A lack of firewall rules restricting access into the mission partner’s network meant that attackers could compromise the DMZ and move into the private network, or access the administration interfaces on the edge router. Additionally, the edge router is only logging locally, which makes it unlikely that those logs are used to detect network scanning or malicious activity.
+[See Job Sheet 3-3-6]
+Take notice of the deficiencies at the network boundary and network logging. Implemented basic hardening on the network by changing configuration settings on the edge device, which improved the security posture at the network boundary and at the DMZ.
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Assessing Host for Hardening
+In this task, assess the security posture of a Windows 10 host on the mission partner’s network. The cda-acct-1 VM is on the previously provided network map. Utilize the command prompt, PowerShell, and the local group policy editor to view configuration settings present on the workstation. Note the deficiencies in the security settings to remediate in the next task.
+[See Job Sheet 3-3-7]
+ 
+CUI
+Account Management includes policies such as password changes, account creation, change, and account deletion. Accounts are often abused or used as backdoor mechanisms so it is good practice to keep a handle on them.
+
+Figure 3.3-28
+Detailed Tracking helps in figuring out what an attacker did once they compromised a system, especially via process creation and termination.
+
+Figure 3.3-29
+Policy Change logs information about changes to auditing policy. Attackers make changes to policy to prevent audit logs from being created to obfuscate their trail.
+
+Figure 3.3-30
+ 
+Logon/Logoff is helpful in establishing pattern of life of users, which helps detect insider threats as well as malicious attackers. Notice the Account Lockout auditing policy is not enabled.
+
+Figure 3.3-31
+Privilege Use; “with great power comes great responsibility”, as well as greater logging requirements. If a user has the ability to compromise a system, then their actions should be monitored. In addition, attackers often compromise administrative accounts because they need elevated privileges to establish persistence, change settings, etc.
+
+Figure 3.3-32
+System events include shutdowns, restarts, and other events that affect the security of the system. Exploits often cause a change in security state, and are associated with system logs.
+
+Figure 3.3-33
+This list is not all inclusive. Microsoft documents their event logs well and more information about their specific auditing policy is found on their website.
+ 
+[See Job Sheet 3-3-8]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Remediating Host
+Previously, you analyzed a Windows 10 host to understand concepts of host hardening. You noticed deficiencies in areas of password policy, firewall policy, and auditing policy. Now, harden the Windows 10 host to reduce incidence of attacks and to mitigate vulnerabilities.
+[See Job Sheet 3-3-9]
+You examined some considerations for hardening Windows hosts, and remediated elements of password policy, firewall policy, and auditing policy.
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+End of Lesson Challenge [See Problem Sheet 3-3-1]
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+ 
+Conclusion
+In this lesson, you explored concepts relating to enabling hardening in relation to a CPT, and practiced network and host hardening in the tasks. You now have foundational knowledge of when to implement hardening measures in mission partner networks.
+ 
+
+
+ENABLE HARDENING
+Workflow
+1.	Log into the cda-lin-hunt VM with the provided credentials. Credentials are case-sensitive.
+Username: trainee
+Password: Th1s is 0perational Cyber Training!
+2.	Select Terminal Emulator from the desktop. Enter the following command in the Terminal Emulator to Secure Shell (SSH) into the cda-firewall VM using the provided credentials.
+trainee@cda-lin-hunt:~$ ssh trainee@172.16.0.5 Username: trainee
+Password: Th1s is 0perational Cyber Training!
+3.	Run the following command to check the interface status on the device.
+trainee@cda-firewall:~$ show interfaces
+
+Figure 3.3-2
+ 
+
+
+ENABLE HARDENING
+NOTE: Steps continued from Job Sheet 3-3-1.
+4.	Run the following command to check the firewall rules present on the border router. Since this device sits at the network boundary, access into the network should be enforced at this point. Rules restricting access to the DMZ and restricting access to the private network are displayed. trainee@cda-firewall:~$ show firewall
+
+Figure 3.3-3
+ 
+
+
+ENABLE HARDENING
+NOTE: Steps continued from Job Sheet 3-3-2.
+5.	Run the following command to verify the running configuration. Glean enabled services, login information, logging settings, and more from the running configuration.
+trainee@cda-firewall:~$ show config
+ 
+
+
+ENABLE HARDENING
+NOTE: Steps continued from Job Sheet 3-3-3.
+6.	Close the connection with cda-firewall.
+trainee@cda-firewall:~$ exit
+7.	SSH in to the cda-core-router VM with the following credentials in the same terminal:
+trainee@cda-lin-hunt:~$ ssh trainee@172.16.0.6 Username: trainee
+Password: Th1s is 0perational Cyber Training!
+8.	Observe the interface status by running the command in the terminal. Notice the inactive interface.
+trainee@cda-core-router:~$ show interfaces
+
+Figure 3.3-10
+9.	Revisit the network map, and note how the network is segmented. It is good practice to split workstations into different subnets to efficiently manage access in each subnet. This network is divided based on department. Run the following command in the terminal to check the firewall rules currently existing for these network segments:
+trainee@cda-core-router:~$ show firewall
+
+Figure 3.3-11
+ 
+
+
+ENABLE HARDENING
+NOTE: Steps continued from Job Sheet 3-3-4.
+10.	Run the following command in the terminal to check the running configuration of the core router:
+trainee@cda-core-router:~$ show config
+ 
+
+
+ENABLE HARDENING
+Workflow
+1.	Log into the cda-lin-hunt VM using the following credentials. Credentials are case-sensitive.
+Username: trainee
+Password: Th1s is 0perational Cyber Training!
+2.	Select Terminal Emulator from the desktop. Enter the following command into the Terminal Emulator to SSH into the cda-firewall using the provided credentials.
+trainee@cda-lin-hunt:~$ ssh trainee@172.16.0.5 Username: trainee
+Password: Th1s is 0perational Cyber Training!
+3.	Run the following command to enter configuration mode:
+trainee@cda-firewall:~$ configure
+4.	Configure a firewall rule to drop traffic by default that was not initiated by the internal Local Area Network (LAN), and log the occurrences.
+trainee@cda-firewall:~$ set firewall name INTERNET-IN default-action 'drop' trainee@cda-firewall:~$ set firewall name INTERNET-IN enable-default-log trainee@cda-firewall:~$ set firewall name INTERNET-IN rule 10 action 'accept'
+trainee@cda-firewall:~$ set firewall name INTERNET-IN rule 10 state established 'enable' trainee@cda-firewall:~$ set firewall name INTERNET-IN rule 10 state related 'enable'
+This restricts all access from the public internet into the private network by default unless it was initiated by a host behind the router, and allows detection of scanning activities.
+•	Line 1 — Sets the default action to dropping traffic; if there is no rule matching the IP header, the packet is dropped
+•	Line 2 — Enables logging on the traffic coming in by default
+•	Line 3 — Creates a new rule that accepts traffic matching criteria listed in rule 10
+•	Line 4 — Creates a stateful rule allowing established connections (e.g., if a host initiated a connection to a server on the internet, the response would not be dropped)
+•	Line 5 — Creates a stateful rule allowing related traffic through (e.g., an Internet Control Message Protocol (ICMP) error response from a gateway to a ICMP echo destined for the internet)
+ 
+5.	Configure a firewall rule to drop connections initiated by devices within the DMZ, as these devices are not trusted. The ruleset performs the same actions as previous. This prevents attackers from pivoting from the DMZ into the private network in the event of a compromise. trainee@cda-firewall:~$ set firewall name DMZ-IN default-action 'drop'
+trainee@cda-firewall:~$ set firewall name DMZ-IN enable-default-log trainee@cda-firewall:~$ set firewall name DMZ-IN rule 10 action 'accept'
+trainee@cda-firewall:~$ set firewall name DMZ-IN rule 10 state established 'enable' trainee@cda-firewall:~$ set firewall name DMZ-IN rule 10 state related 'enable'
+6.	Configure a rule allowing connections to the mail server. This is a service that users on the open internet have access to, since the users within the network need to be able to receive emails. trainee@cda-firewall:~$ set firewall name VYATTA-LOCAL rule 10 action 'accept'
+trainee@cda-firewall:~$ set firewall name VYATTA-LOCAL rule 10 destination port '25' trainee@cda-firewall:~$ set firewall name VYATTA-LOCAL rule 10 protocol 'tcp'
+•	Line 1 — Configures rule 10 to accept traffic
+•	Lines 2 and 3 — Specify traffic going to Transmission Control Protocol (TCP) port 25 is accepted
+7.	Configure a rule to allow traffic to the Domain Name System (DNS) server. DNS is another service that the public needs access to if there are resources within the DMZ that need to be accessed by name.
+trainee@cda-firewall:~$ set firewall name VYATTA-LOCAL rule 20 action 'accept' trainee@cda-firewall:~$ set firewall name VYATTA-LOCAL rule 20 destination port '53' trainee@cda-firewall:~$ set firewall name VYATTA-LOCAL rule 20 protocol 'udp'
+•	Line 1 — Configures rule 20 to accept traffic
+•	Lines 2 and 3 — Specify traffic going to User Datagram Protocol (UDP) port 53 is accepted
+8.	Apply the rules to the internet facing interface.
+trainee@cda-firewall:~$ set interfaces ethernet eth2 firewall in name "INTERNET-IN" trainee@cda-firewall:~$ set interfaces ethernet eth2 firewall local name "VYATTA-LOCAL" trainee@cda-firewall:~$ set interfaces ethernet eth1 firewall in name "DMZ-IN"
+These commands are applied in and locally. Vyatta is different in the sense that typical routers have in and out directionality, but Vyatta routing devices have a local directionality as well, which applies to traffic destined specifically at the device. Since Destination Network Address Translation (DNAT)/port forwarding is necessary to reach the DMZ, implement rules for the devices in the DMZ network. The last rule applies the DMZ rule to the interface facing the DMZ.
+9.	Configure remote System Logging Protocol (syslog) by running the following command:
+trainee@cda-firewall:~$ set system syslog host 199.63.64.92 facility all level all
+This sets the syslog host to the logging host in the security domain for all facilities used by syslog (e.g., kern, user, auth, etc.). The logs enabled by the firewall rule are sent to the remote logging server as well.
+ 
+10.	Commit the changes, save, and exit configuration mode.
+trainee@cda-firewall:~$ commit trainee@cda-firewall:~$ save trainee@cda-firewall:~$ exit
+11.	Run the following command to verify the changes by checking the running configuration.
+trainee@cda-firewall:~$ show config
+Firewall rules implemented:
+
+ 
+ 
+
+Firewall rules applied to interfaces:
+ 
+Figure 3.3-14
+
+
+Figure 3.3-15
+ 
+Remote syslog enabled:
+
+Figure 3.3-16
+ 
+JOB SHEET 3-3-7
+
+
+ENABLE HARDENING
+Workflow
+1.	Log in to the cda-acct-1 VM using the following credentials:
+Username: trainee
+Password: Th1s is 0perational Cyber Training!
+2.	Open a command prompt window, and run the following command:
+C:\Users\trainee> systeminfo
+This command obtains information about the current Windows OS installation and hardware. From the output, view the version, service pack, and hotfixes applied. This information is helpful in determining if the system is up to date. Update and patch management is an essential part of hardening, as an outdated system has more vulnerabilities.
+
+Figure 3.3-17
+ 
+3.	Open the Local Group Policy utility by opening the Windows Start menu and entering Edit Group Policy.
+
+Figure 3.3-18
+Recall that group policy is the set of configuration settings that governs several facets, including security, on Windows hosts. While group policy is typically configured centrally on a DC, it is possible to set group policy locally.
+4.	Select Computer Configuration > Windows Settings > Security Settings to view a number of security settings.
+
+Figure 3.3-19
+5.	Select Account Policies > Password Policy.
+
+Figure 3.3-20
+Notice the password complexity requirement is disabled, which allows users on this workstation to have insecure passwords.
+ 
+6.	Select Account Policies > Account Lockout Policy.
+
+Figure 3.3-21
+Notice that there are no lockout requirements set, which allows brute force attacks.
+7.	Select Windows Firewall with Advanced Security > Windows Firewall with Advanced Security - Local Group Policy Object. Select Windows Firewall Properties under Public Profile in the Overview window.
+
+Figure 3.3-22
+Examine the firewall policy on the host. Host firewalls are another defense that protects devices connected to a network. Notice from the dialog window that the firewall is not configured.
+
+Figure 3.3-23
+ 
+8.	Select Software Restriction Policies. From the Object Type pane, open Enforcement.
+
+Figure 3.3-24
+From the output, assess that all software restrictions apply to all users except local administrators, and certificate rules are enforced on the host. Software policies prevent users from installing pirated or malicious software.
+9.	Select Designated File Types.
+
+Figure 3.3-25
+The output shows which file extensions have software restrictions applied.
+NOTE: If the file extension is not on the list, the software restriction policy does not affect the extension.
+10.	Open a PowerShell command window and run the following command:
+Get-WmiObject Win32_Product | Select-Object Name, Version
+ 
+PowerShell is a powerful object-oriented scripting language tightly integrated into Windows OSs and is covered in depth in a later lesson. This command audits installed software. Software auditing is done to track licensing as well as ensure that installed software meets organizational requirements, (e.g., all software is digitally signed). This command queries the Windows Management Instrumentation (WMI) interface for installed windows products. Select-Object allows the user to select the attributes they want to see; in this case, the name and the version. A caveat is that WMI only shows 64-bit products installed. To get an accurate listing, examine both WMI Command-Line (WMIC) objects and the registry.
+
+Figure 3.3-26
+11.	Run the following command to get more information on installed software:
+Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select- Object DisplayName, DisplayVersion
+This command checks the properties of all the objects within the specified registry key, the Uninstall key, specifically under the Wow6432Node key. When software is installed, it also creates an associated entry in the Uninstall key. Check this; installed products are usually associated with an Uninstall key. The Wow6432Node key is associated with 32-bit software.
+
+Figure 3.3-27
+ 
+12.	View the local auditing configuration. Expand Windows Settings > Security Settings > Advanced Audit Policy Configuration > System Audit Policies Local Group Policy and observe items being audited by selecting the individual policies. Observe that local auditing is enabled on some categories. Recall that auditing is especially helpful in incident detection and response. It is a key component of any hardening strategy. If events are not being logged, then it is near impossible to detect malicious activity or what happened during an incident.
+ 
+
+
+ENABLE HARDENING
+NOTE: Steps continued from Job Sheet 3-3-7.
+13.	Record deficiencies observed from this task.
+ 
+
+
+ENABLE HARDENING
+1.	Log in to the cda-acct-1 VM using the following credentials:
+Username: trainee
+Password: Th1s is 0perational Cyber Training!
+2.	Open the Local Policy Group Editor and select Password Policy to revise the password policy. Enable password complexity by selecting Password must meet complexity requirements, and selecting Enabled. Save the policy by selecting OK.
+
+Figure 3.3-34
+3.	Enable the lockout threshold by selecting Account Lockout Policy > Account Lockout Threshold. Enter 5 into the text box, and select OK.
+
+Figure 3.3-35
+ 
+A dialog box opens specifying that the Account Lockout Duration and Reset Account Lockout policies should be set, if Account Lockout Threshold is set. Select OK from the dialog, which automatically sets both settings to 30 minutes.
+
+Figure 3.3-36
+4.	Select Windows Firewall with Advanced Security > Windows Firewall with Advanced Security-Local Policy Object. Select Windows Firewall Properties.
+
+Figure 3.3-37
+A dialog window appears. Select On (Recommended) from the Firewall state drop-down menu.
+
+Figure 3.3-38
+This provides the host device some protection on the network.
+ 
+5.	Navigate to Advanced Audit Policy Configuration > System Audit Policies - Local Group Policy Object > Logon/Logoff. Select Audit Account Lockout and enable all the check boxes. Select OK.
+
+Figure 3.3-39
+This enables logging for logons and logoffs.
+ 
+PROBLEM SHEET 3-3-1
+
+ENABLE HARDENING
+Review the assigned network and observe its current security posture. Answer questions on the network’s security posture based on the network map and running commands in the provided virtual machines. Access is available to cda-edge-router via SSH and the cda-acct-2 workstation VM using the following credentials:
+Username: trainee
+Password: Th1s is 0perational Cyber Training!
+
+ASSESS
+A.	INTRODUCTION
+Learn the assess function as it relates to the core Cyber Protection Team (CPT) functions and how it relates to the assess mission, as well as a tactical assessment within the CPT Operations Process (OP). Utilize Measures of Effectiveness (MOE) and Measures of Performance (MOP) to perform a tactical assessment, and develop a report that publishes their findings on mission effectiveness. The lesson concludes by writing detailed tactical reports including a timeline of compromise.
+Estimated time to complete: 2.0 hours
+
+B.	ENABLING OBJECTIVES
+Upon successful completion of this section, you will be able to:
+3.4.1	EXPLAIN how CPTs function when reporting on threat hunts and incidents in customer networks
+3.4.2	IDENTIFY reporting tools and capabilities
+3.4.3	DISCUSS reporting processes and procedures
+3.4.4	PERFORM and report on a tactical assessment of a CPT mission
+
+C.	TOPIC OUTLINE
+•	Overview of the assess function
+•	Measures of effectiveness and performance
+•	Building a timeline
+•	Building the report body
+•	Gathering supporting documentation
+•	Writing the tactical report
+
+D.	TOOLKIT
+
+Text Editor
+A text editor is used to edit plain text (i.e., no formatting). Some of the more popular programs include Notepad and TextEdit.
+ 
+MITRE ATT&CK
+
+MITRE Adversarial Tactics, Techniques, and Common Knowledge (ATT&CK) is a knowledge base for cyber adversary behavior, It covers the multiple phases of an adversary's attack lifecycle and the systems they typically target.
+ 
+INFORMATION SHEET 3-4
+
+LESSON 4 — ASSESS
+
+Overview of the Assess Function
+The Assess Phase
+(FOUO) One of the core functions of a CPT is assessing the effectiveness of response actions against current and future risks to specified terrain in cyberspace. As per CWP 3.33-4:
+During operations, the CPT will simultaneously assess the effectiveness of clearing operations, hardening actions taken by local network defenders, and the overall network system security, and resilience.
+(FOUO) As per CWP 3.33-4, the goal of assessing is to conduct Cyber Threat Emulation (CTE). CTE assesses the current security posture by emulating known adversary Tactics, Techniques, and Procedures (TTP) to validate the current defensive measures. CTE is outside the scope of this course.
+However there is another step within the CPT OP that addresses CPTs assessing the effectiveness of their other functions that do not involve CTE; Step 6, Assessment.
+ 
+Figure 3.4-1
+Assessment takes the products from a mission execution and uses them to determine if operational objectives were met. Assessment is centered around indicators to track progress towards mission accomplishment.
+The indicators that the trainee is concerned with as per CWP 3-33.4 are:
+MOPs determine whether operational tasks were satisfied to create the desired effect. MOEs determine whether the desired effect achieved operational objectives.
+More concisely, MOPs track progress towards creating the desired effect, and MOEs evaluate if that desired effect achieved operational objectives. MOEs can be considered as bullets and MOPs can be considered sub-bullets.
+ 
+While the CPT OP focuses on mission at an operational level, CPTs do not function at an operational level during day-to-day tasks. They do function at a tactical level however. When the OPCON HQS Operational Planning element provides operational level MOEs and MOPs, the CPT will use them by converting them into tactical level MOEs and MOPs. This involves turning operational level MOPs into tactical level MOEs, and developing new tactical MOPs that would correspond to the MOEs. The new tactical level MOEs and MOPs will be used by the CPT to conduct tactical assessments during and after the mission execution phase.
+Tactical assessments can fulfill the objective of assessing the effectiveness of response actions, and therefore play a part during the assess function.
+
+MOEs and MOPs
+MOEs and MOPs are utilized extensively throughout planning, execution, and assessment. Consider the following scenario:
+SAMPLE COMMAND (SACOM) local network defenders noticed an increase in scanning activities on their public-facing infrastructure devices. Intelligence reporting indicates an increase of activity from Advanced Persistent Threat (APT) 28, also known as FANCY BEAR, against Department of Defense (DoD) information networks. Concerned for the the state of their network, SACOM requested support from the CPT to clear out any existing compromises, and harden their networks against future Malicious Cyberspace Activities (MCA). The CPT received an Operations Order (OPORD) shortly after.
+Mission Statement: The CPT conducts proactive Defensive Cyberspace Operations (DCO) and Incident Response (IR) in support of counter-APT28 operations throughout SACOM networks in order to prevent enemy forces from gaining a foothold in critical SACOM systems.
+End State: Deny APT28 from access into SACOM networks with local network defenders capable of preventing future incidents. SACOM networks are secure and fully functional.
+From this scenario, at an operational level, the MOEs are defined as the following (derived from the end state):
+•	No compromises associated with APT28 TTPs within SACOM networks
+•	Implement countermeasures to prevent further intrusions in SACOM networks
+•	Disseminate findings to local network defenders and other DoD organizations The key tasks outlined in the OPORD received by the CPT are listed as:
+•	Build a positive working relationship with local network defenders.
+•	Hunt for and contain existing compromises
+•	Implement effective countermeasures and policies in conjunction with local defenders
+•	Report findings to maintain a common operating picture
+ 
+At the operational level, MOPs are the key tasks.
+Operational MOE	Operational MOP
+•	No compromises associated with APT28 TTPs within SACOM networks	
+•	Hunt for and contain existing compromises
+
+•	Implement countermeasures to prevent further intrusions in SACOM networks	•	Build a positive working relationship with local network defenders.
+•	Implement effective countermeasures and policies in conjunction with local defenders
+•	Report findings for the purpose of maintaining a common operating picture	
+•	Report findings to maintain a common operating picture.
+Table 3.4-1
+ 
+Since CPTs only function at the tactical level, the MOPs become the new MOEs. Note that the MOPs in Table 3.4-1 populate the MOEs in Table 3.4-2. The CPT decides how to accomplish their MOEs by developing new MOPs.
+Tactical MOE	Tactical MOP
+
+
+
+•	Build a positive working relationship with local network defenders.	•	Establish primary lines of communication with local network defenders
+•	Obtain copies of SACOM security policies and procedures
+•	Request documentation on SACOM networks and systems
+
+
+
+
+•	Hunt for and contain existing compromises	•	Determine threats based of threat intel for APT28
+•	Detect MCA, if any exist
+•	Contain systems upon discovery of MCA
+•	Eradicate traces of malware from infected systems
+•	Restore infected systems to previously known good states
+
+
+•	Implement effective countermeasures and policies in conjunction with local defenders	•	Assess vulnerabilities in the networks and systems
+•	Prioritize vulnerabilities that need to be addressed based on current threats
+•	Implement hardening at prioritized areas in the network or on hosts
+
+
+
+•	Report findings to maintain a common operating picture.	•	Establish reportable events
+•	Publish situational reports at the occurrence of a reportable event
+•	Publish additional status reports on a routine basis
+•	Publish comprehensive report at the conclusion of the mission
+Table 3.4-2
+The CPT continuously references these MOEs and MOPs during mission execution, and post mission execution to ensure they effectively conducted operations and completed their key tasks.
+ 
+The Cyber Defense Analyst (CDA) may decide that an MOP should be broken down and converted into an MOE. New MOPs are developed to satisfy the MOE. For example, using the MOP from the second row of Table 3.4-3:
+MOE	MOP
+
+•	Detect MCA, if any exist	•	Check Intrusion Detection System (IDS)/Intrusion Prevention System (IPS) logs for alerts
+•	Query Kibana/Splunk for Indicators of Compromise (IOC)
+Table 3.4-3
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Building a Timeline
+During the assessment function, validate that the CPT accomplished their MOEs. There are several documents to examine for this purpose. Examining external reporting and observing the Operation Notes (OPNOTE) of other analysts are critical tasks at this stage. Focus on aggregating the output of various intelligence and tactical products to ensure that the mission objectives were met.
+Consider tactical output from mission execution:
+•	Situational Reports (SITREP): SITREPs are routinely generated to provide updates to higher elements on a daily, weekly, per-phase, or on request.
+•	Tactical Assessments: Tactical assessments are low-level assessments that often contain their own MOEs and MOPs
+•	OPNOTES: OPNOTEs are in-depth and technical about the events that occur during mission execution. However, OPNOTEs contain very specific timestamps and events rather than a high-level summary. When more detail than a high-level summary is needed, consult the OPNOTEs.
+ 
+In addition, OPNOTEs are helpful in developing a execution timeline including, but not limited to:
+•	Health and Status Reports: US government agencies publish health and status reports on a regular basis to aid with situational awareness of current operational activities, which enables the capacity to build, defend, and operate in cyberspace. These reports have a variety of functions, but they are useful in establishing past trends and assess their impact on the mission partner’s network.
+•	Cyber IR Reports: DoD agencies must abide by the cyber incident handling program defined in the Chairman of the Joint Chiefs of Staff Manual (CJCSM) 6510.01B. This document outlines a specific incident response report template. The completed reports are stored in the Joint Incident Management System (JIMS) on Secret Internet Protocol Router Network (SIPRNet). Past incidents provide a historic picture of the network as well.
+○	Link: https://www.jcs.mil/Portals/36/Documents/Library/Manuals/m651001.pdf?ver=20 16-02-05-175710-897
+National Institute of Standards and Technology (NIST) Incident Response Report Format from the NIST Computer Incident Handling Guide
+B.1	Basic Data Elements
+•	Contact Information for the Incident Reporter and Handler
+○	Name
+○	Role
+○	Organizational unit (e.g., agency, department, division, team) and affiliation email address
+○	Phone number
+○	Location (e.g., mailing address, office room number)
+•	Incident Details
+○	Status change date/timestamps (including time zone): when the incident started, when the incident was discovered/detected, when the incident was reported, when the incident was resolved/ended, etc.
+○	Physical location of the incident (e.g., city, state)
+○	Current status of the incident (e.g., ongoing attack)
+○	Source/cause of the incident (if known), including hostnames and Internet Protocol (IP) addresses
+○	Description of the incident (e.g., how it was detected, what occurred)
+○	Description of affected resources (e.g., networks, hosts, applications, data), including systems' hostnames, IP addresses, and function
+○	If known, incident category, vectors of attack associated with the incident, and indicators related to the incident (traffic patterns, registry keys, etc.)
+○	Prioritization factors (functional impact, information impact, recoverability, etc.)
+○	Mitigating factors (e.g., stolen laptop containing sensitive data was using full disk encryption)
+○	Response actions performed (e.g., shut off host, disconnected host from network)
+○	Other organizations contacted (e.g., software vendor)
+•	General Comments
+ 
+See the complete NIST Computer Incident Handling Guide here: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-61r2.pdf
+These documents surface during mission planning or mission execution. Keep in mind that supported mission partners may not always have the same reporting formats and documents.
+Extract the relevant information from the supporting documentation and build a timeline to fit it with the MOEs and MOPs.
+
+Building a Timeline from Mission Execution
+Provided with the output of mission execution from the previous scenario, create a timeline of events from the mission execution focusing on accomplished MOPs. Only focus on creating a timeline for one MOE, and its corresponding MOPs. This timeline is referenced to create the final assessment report.
+[See Job Sheet 3-4-1]
+NOTE: This is the working checklist for the remainder of the lesson.
+ 
+Assessment is a team function, and different work roles are more involved with other MOEs/MOPs than others. For this mission, focus primarily on MOEs 2 and 3, as highlighted below.
+Number	MOE	MOP
+
+1.A	Build a positive working relationship with local network defenders.	Establish primary lines of communication with local network defenders
+1.B	Build a positive working relationship with local network defenders.	Obtain copies of SACOM security policies and procedures
+1.C	Build a positive working relationship with local network defenders.	Request documentation on SACOM networks and systems
+2.A	Hunt for and contain existing compromises	Determine risk based off threat intel for APT28
+2.B	Hunt for and contain existing compromises	Detect MCA, if any exist
+2.C	Hunt for and contain existing compromises	Contain systems upon discovery of MCA
+2.D	Hunt for and contain existing compromises	Eradicate traces of malware from infected systems
+2.E	Hunt for and contain existing compromises	Restore infected systems to previously known good states
+3.A	Implement effective countermeasures and policies in conjunction with local defenders	Assess vulnerabilities in the networks and systems
+3.B	Implement effective countermeasures and policies in conjunction with local defenders	Prioritize vulnerabilities that need to be addressed based on current threats
+3.C	Implement effective countermeasures and policies in conjunction with local defenders	Implement hardening at prioritized areas in the network or on hosts
+4.A	Report findings to maintain a common operating picture	Establish reportable events
+4.B	Report findings to maintain a common operating picture	Publish SITREPs at the occurrence of a reportable event
+4.C	Report findings to maintain a common operating picture	Publish additional SITREPs on a routine basis
+4.D	Report findings to maintain a common operating picture	Publish comprehensive report at the conclusion of the mission
+Table 3.4-4
+[See Job Sheet 3-4-2]
+ 
+Developing the Report Body
+The report body contains a narrative about the events that transpired during mission execution and is built from the timeline. To determine if the necessary actions were taken to achieve each MOP, tie corresponding events from the timeline to the appropriate MOP. The completed report body includes the assessment criteria and a description about if/when the criteria was fulfilled. Use the MOEs/MOPs as the assessment criteria and the timeline to determine when that criteria was met.
+Examine timelines and create a palatable narrative of the events that transpired during mission execution. This narrative becomes the report body which is used to derive the rest of the assessment report.
+[See Job Sheet 3-4-3]
+Phishing attempts to exploit users and public-facing devices typically include web and mail servers. The highlighted portions correspond to making the effort to search for IOCs associated with initial access from the threat intel.
+
+Figure 3.4-7
+
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Evaluate MOP | Detecting MCA [See Job Sheet 3-4-4]
+There are several activities that fall under this MOP, so they are summarized per detection of MCA. Not every action leads to discovery of MCA. During this mission, several different types of scans are run, but only a few indicate MCA. Since a few MCAs were detected during this mission, the focus for this MOP is on the detected MCAs. In other cases, document efforts on detecting MCA and recording that none were found.
+ 
+The MITRE ATT&CK matrix lists the progression of steps used to compromise enterprise networks. It is covered in-depth in a later lesson. A brief overview of the steps of MITRE ATT&CK in an enterprise is shown below.
+Name	Description
+
+Reconnaissance	The adversary is trying to gather information they can use to plan future operations.
+Resource Development	The adversary is trying to establish resources they can use to support operations.
+Initial Access	The adversary is trying to get into your network.
+Execution	The adversary is trying to run malicious code.
+Persistence	The adversary is trying to maintain their foothold.
+Privilege Escalation	The adversary is trying to gain higher-level permissions.
+Defense Evasion	The adversary is trying to avoid being detected.
+Credential Access	The adversary is trying to steal account names and passwords.
+Discovery	The adversary is trying to figure out your environment.
+Lateral Movement	The adversary is trying to move through your environment.
+Collection	The adversary is trying to gather data of interest to their goal.
+Command and Control	The adversary is trying to communicate with compromised systems to control them.
+Exfiltration	The adversary is trying to steal data.
+
+Impact	The adversary is trying to manipulate, interrupt, or destroy your systems and data.
+Table 3.4-6 – https://attack.mitre.org/tactics/enterprise/
+[See Job Sheet 3-4-5]
+
+Knowledge Check
+[See PCTE Knowledge Check]
+ 
+Evaluating MOPs | Containment and Restoration [See Job Sheet 3-4-6]
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Completing the Report Body [See Job Sheet 3-4-7]
+In this task, trainees utilized the timeline created from the mission execution output to write a report body.
+
+Gathering Supporting Documentation
+While working on a tactical assessment of MOE/MOP completion, the main concern was the documentation that supports the report body. There are various documents that can go in the report body, but remember that mission execution results in large amounts of data. Select documentation that appropriately supports the written narrative
+•	Logs: Log entries often support the conclusion that an intrusion occurred.
+•	Configurations: Configurations shed light on vulnerabilities from bad configurations. If a weakness in configuration exists, then including the configuration can support the report body.
+•	Command output: Was something noticeable only because a specific command was run? For example, was there malware initiating a connection to the internet reflected in Network Statistics (netstat) output?
+•	Screenshots: At times, include a screenshot instead of text as there may be a visual elements to the data (e.g., Kibana dashboards).
+•	File inventory: Since binary files are not well represented in text, rather than including the binary file output, include a list of files that came up during the mission, their file hashes, and where to find the file. Files to inventory include packet captures, malware, images, and memory snapshots.
+This list is not inclusive and is a guideline of documents to include.
+Reference Report_Body.doc from the previous steps and the Sample Report Body to determine the documentation that needs to be collected to support the narrative in the report body.
+Some documents that would support the narrative and are beneficial to include in the final assessment report include:
+•	Kibana log entries that demonstrate a Transmission Control Protocol (TCP) Synchronization (SYN) Scan
+•	Kibana log entries indicative of a Structured Query Language (SQL) injection attack
+•	Event logs relating to administrator workstation compromise
+•	Screenshot of the registry entry for malware persistence
+ 
+Files from CDA1 to include in the file inventory:
+•	egg.exe, if it existed
+•	backdoor.exe
+•	packet captures containing the intrusions, if they exist
+Knowledge Check
+[See PCTE Knowledge Check]
+
+Knowledge Check
+[See PCTE Knowledge Check] Writing the Tactical Report
+
+
+
+
+
+
+
+
+There are multiple sections in an assessment report. The sections should be included in the following order:
+Point of Contact (POC): Include the CPT designation and a POC for the report in case there are any questions about the content.
+Assessment Summary: This is an evaluation summary and is the most important part of the report. Often, the reviewer only needs to read this section of the report. If they read further, it is because they determined they needed more in-depth information about the contents of the summary. Information to include in the Assessment Summary include the OPORD the mission was supporting, and if the MOEs and MOPs were met. If the MOE/MOP was not met, then briefly discuss which MOE/MOP was not met and why. The summary is a final assessment of whether the CPT met their objectives. It is not to discuss the details of what transpired during mission execution. This section is also referred to as Bottom Line Up Front (BLUF).
+Report Body: The report body includes the assessment criteria, and a narrative detailing when the criteria was (or was not) fulfilled. Use the MOEs/MOPs as the assessment criteria, and use the timeline to determine when that criteria was met. Technical details relating to mission execution go here.
+Recommendations and Mitigations: While building the timeline, take notice if the CPT did not fulfill a MOE/MOP. This information is included in the Recommendations and Mitigations section of the assessment report. Alternatively, further recommendations on how to accomplish a certain MOP may be included. For example, the CPT may be using an outdated tool, or a more
+ 
+effective approach for accomplishing an MOP may be possible. This section of the report includes that information.
+Appendices: Supporting documentation for the report body is included in this section. If mission output indicates that a MOP/MOE was met, it should be included here: labelled and referenced appropriately.
+References: Include supporting documentation for the mission, including but not limited to the OPORD, threat intelligence reports, health and status reports, etc. If it was used during mission planning or execution, then a good rule of thumb is to include it in the list of references.
+The order the report should be populated is:
+1.	Report Body/Appendices: Discuss what actually happened during mission execution in a little more detail.
+2.	Recommendations and Mitigations: Includes any unmet MOPs discovered while writing the report body; this section is developed after the report body.
+3.	Assessment Summary: Summarizes the rest of the report; this needs to be done last.
+4.	POC/References: The order in which these sections are added is not important as they are not dependent on other sections.
+
+Completing the Report
+Complete the assessment report using Report_Body.doc to populate the remainder of the assessment report. The assessment report provides feedback of the CPT’s mission execution and allows for future follow on actions.
+[See Job Sheet 3-4-8]
+Writing assessment reports was explored. Write assessment reports following a mission execution to assess the degree of mission accomplishment.
+
+Assess Function
+Based on the scenario outlined in Measures of Effectiveness and Performance, populate the Assessment Summary, Report Body, and Recommendations and Mitigations sections of the assessment report for tactical MOE 3. Follow this workflow:
+•	Create a timeline of events relevant to the MOE being assessed
+•	Create the Report Body from the timeline
+•	Determine if the CPT successfully achieved their MOEs/MOPs
+•	Complete the Recommendations and Mitigations appropriately based on the CPT’s performance.
+•	Write the Assessment Summary to evaluate the CPT’s performance.
+•	Save the assessment report
+The completed report should discuss if the CPT was able to implement effective countermeasures and policies in conjunction with local defenders. The Assessment Summary is brief and to the point stating whether the CPT met expectations for tactical MOE 3 or not. If they did not, explain why. If the CPT did not meet expectations, the Recommendations and
+ 
+Mitigations section should explain why and what should be done to remediate their deficiencies. If the CPT accomplished their objectives, then provide input on how to improve their processes.
+
+Conclusion
+In this lesson, you explored concepts related to the CPT operations process and how they relate to assessing. You utilized MOPs and MOEs to conduct a tactical assessment. You took the following steps to build the final report: building a timeline, gathering the necessary supporting documentation, and aggregating the data into an assessment report with a concise bottom line up front. You are now able to effectively conduct tactical assessments in accordance with the asses function.
+ 
+
+
+ASSESS
+Workflow
+1.	Log into the cda-win-hunt Virtual Machine (VM) using the following credentials:
+Username: trainee
+Password: Th1s is 0perational Cyber Training!
+2.	Open the Mission Support folder. Select the MOEs and MOPs Microsoft Excel spreadsheet.
+
+Figure 3.4-2
+3.	Examine the MOEs and MOPs. The MOPs become the assessment criteria.
+ 
+JOB SHEET 3-4-2
+
+ASSESS
+NOTE: Steps continued from Job Sheet 3-4-1.
+Only complete the MOPs corresponding to MOE 2 (Hunt for and contain existing compromises).
+4.	Review the threat intelligence on APT28 by opening APT28 Threat Intelligence in the
+Mission Support Documents folder.
+
+Figure 3.4-3
+APT28 MITRE ATT&CK Threat Intelligence
+Initial Access: Phishing, exploiting public-facing applications Execution: PowerShell scripts, macros, loader Trojan Persistence: Registry keys HKEY_CURRENT_USER (HKCU)\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+Privilege escalation: Access token theft, publicly known Common Vulnerabilities and Exposures (CVE)
+Credentialed access: Brute force, password guessing, network sniffing, Operating System (OS) credential dumping, keyloggers
+Lateral movement: Trusted relationships, Server Message Block (SMB) exploitation Collection: Network sniffing, file system, email collection
+Command and Control (C2): Encrypted channels Exfiltration: Same as C2
+Software: Remote Access Tool (RAT) ADVSTORESHELL for Windows devices
+ 
+5.	Open the Mission Execution Output folder and review the three OPNOTEs.
+
+Figure 3.4-4
+6.	Combine the output and sort chronologically in Microsoft Word or another text editor.
+Excerpt for Day 1
+Day 1 09:00 - Sent RFI up to mission partner about recent phishing attempts
+Day 1 10:00 - [SACOM-WEB, SACOM-MAIL] Checked Kibana logs for scanning activities that SACOM mission partner mentioned.
+Day 1 10:15 - [SACOM-WEB, SACOM-MAIL] Discovered TCP SYNs going to a large range of ports starting at 011-06-2020T00:01:00Z and continuing for thirty minutes. Originating IPs were all over the place including Nigeria, China, Thailand.
+Day 1 11:00 - [SACOM-USER-[1234]] HBSS scans indicate no anomalies.
+Day 1 11:00 - [SACOM-WEB] Several strange requests to the web server in SACOM networks appearing to be SQL injection attempts. First strange request at 04-06-2020T01:45:00Z.
+Day 1 11:30 - [SACOM-EDGE-RTR] Checked edge router config to see what services were running.
+Day 1 11:30 - [SACOM-WEB] Windows logs showed that the web server process executed a strange executable, egg.exe, at 04-07-2020T03:14:00Z located in a sub folder in the web root folder.
+Day 1 11:45 - [SACOM-WEB] Egg.exe was uploaded by a web admin account at 04-07- 2020T03:02:00Z.
+Day 1 12:00 - [SACOM-EDGE-RTR] Investigated ACLs and rules on the edge router. There are only IPv4 rules and IPv6 is not disabled.
+Day 1 12:00 - [SACOM-WEB] Egg.exe opened a network connection to a Myanmar IP that appeared to belong to a small office/home office (SOHO) router 04-07-2020T03:16:00Z. Day 1 12:15 - [SACOM-WEB] Requested that the web server be removed from the network temporarily.
+Day 1 13:00 - [SACOM-EXCHANGE, SACOM DC] HBSS and MBSA scans completed, no anomalies.
+NOTE: Request for Information (RFI), Transmission Control Protocol (TCP), Synchronization (SYN), Structured Query Language (SQL), Host-based Security System (HBSS), Access Control List (ACL), and Microsoft Baseline Security Analyzer (MBSA)
+ 
+7.	Determine the relevant output by comparing it to the MOE/MOP list. Only keep the relevant information. In addition, trimming repetitive information helps later in the lesson.
+
+2.A	Hunt for and contain existing compromises	Determine risk based of threat intel for APT28
+Table 3.4-5
+According to the threat intel, TTPs of APT28 often include phishing attempts, and exploiting public-facing services. In addition, their collection TTPs include emails. The lines that correspond to fulfilling this MOP are:
+Day 1 09:00 - Sent RFI up to mission partner about recent phishing attempts.
+Day 1 10:00 - [SACOM-WEB, SACOM-MAIL] Checked Kibana logs for scanning activities that SACOM mission partner mentioned.
+Day 1 11:00 - [SACOM-USER-[1234]] HBSS scans indicate no anomalies.
+NOTE: One line may satisfy more than one MOP.
+8.	Repeat step 4 for each MOP in MOE 2.
+9.	Save the timeline as My_Timeline.doc. This is referenced later in the lesson. View the attached example timeline for reference.
+ 
+
+
+ASSESS
+Workflow
+1.	Log into the cda-win-hunt VM with the following credentials:
+Username: trainee
+Password: Th1s is 0perational Cyber Training!
+2.	Open Mission Support Documents from the desktop.
+
+Figure 3.4-5
+3.	Open MOPs and MOEs.xlsx. Focus solely on MOE 2 (Hunt for and contain existing compromises).
+4.	Examine MOP 2.A.
+
+Figure 3.4-6
+5.	Since the MOP is concerned with threat intel, open APT28 Threat Intelligence.txt from the Mission Support Documents folder. Open My_Timeline.doc in a separate window. Determine if the CPT utilized the intelligence in the report.
+ 
+
+
+ASSESS
+NOTE: Steps continued from Job Sheet 3-4-3.
+NOTE: The following steps continue from the previous task.
+6.	Open a new Word document and summarize the information and its relation to the MOP. The CPT analyzed threat intelligence and determined that devices with publically accessible addresses and phishing campaigns posed a risk (2A).
+
+Figure 3.4-8
+7.	Reference the excel spreadsheet again. The next MOP is:
+Detect MCA, if any exist
+8.	Examine the timeline for actions, and take mental note of the lines that match the MOP. Several lines are determined to potentially fill this MOP.
+
+Figure 3.4-9
+NOTE: Assured Compliance Assessment Solution (ACAS)
+ 
+
+
+ASSESS
+NOTE: Steps continued from Job Sheet 3-4-4.
+9.	Use the MITRE ATT&CK matrix to summarize the events for this MOP.
+MITRE ATT&CK Reconnaissance
+The CPT detected reconnaissance activities as TCP syn scans on systems with a public-facing internet interface (2B).
+MITRE ATT&CK Initial Access
+The CPT discovered a compromise on the SACOM public-facing web server resulting from a SQL injection attack. The attacker was able to initiate a callback to a SOHO router on the internet (2B).
+MITRE ATT&CK Lateral Movement
+After compromising the web server, the attacker was able to access an administrator workstation, likely from an SMB exploit (2B).
+MITRE ATT&CK Persistence
+An entry in the RUN registry key pointed to an executable named backdoor.exe was found on the administrator's workstation (2B).
+MITRE ATT&CK Discovery and Lateral Movement
+The compromised administrator workstation was seen scanning devices within its subnet, and attempting further enumeration by querying the domain which was unsuccessful. No evidence of further access was seen from this workstation (2B).
+10.	Continue adding to the Word document.
+
+Figure 3.4-10
+ 
+
+
+ASSESS
+NOTE: Steps continued from Job Sheet 3-4-5.
+NOTE: The following steps continue from the previous task.
+11.	Examine the next MOP from the spreadsheet:
+Contain systems upon discovery of MCA
+12.	Search the timeline for evidence that the systems were contained during mission execution. Review the relevant entries highlighted below:
+
+Figure 3.4-11
+The summary for MOP 2C:
+Upon detection of compromise, the web server and the administrator’s workstation were removed from the network to prevent further incidents (2C).
+13.	Add the line to the Word document.
+14.	Examine the last two MOPs under MOE 2:
+Eradicate traces of malware from infected systems Restore infected systems to previously known good states
+
+Figure 3.4-12
+ 
+vast majority of malware, so these lines satisfy both MOEs. Restoring the backups is just for restoration, so it needs its own line.
+The compromised hosts were reimaged to their security baselines (2D, 2E). The web server was restored from backups (2E).
+15.	Review the complete text for the report body.
+
+Figure 3.4-13
+ 
+
+
+ASSESS
+NOTE: Steps continued from Job Sheet 3-4-6.
+NOTE: The following steps continue from the previous task.
+16.	Add the Report Body text from the MOEs and MOPs spreadsheet to the beginning of the Word document. The report body looks similar to this:
+
+Figure 3.4-14
+17.	Save the file as Report_Body to the desktop. This document is referenced later.
+ 
+
+
+ASSESS
+Workflow
+1.	Log into the cda-win-hunt vm using the following credentials:
+Username: trainee
+Password: Th1s is 0perational Cyber Training!
+2.	Open Report_Body.docx on the desktop.
+3.	Compare the report body with the MOE/MOP checklist for MOE 2. All the bullets have a corresponding event. So far the CPT has met all their objects regarding MOE 2.
+
+Figure 3.4-15
+4.	Add a new section for appendices. Since screenshots, documentation, and command output are not provided, do not fill this section.
+No supporting documentation for this report.
+ 
+5.	Create a new section for the Recommendations and Mitigations. During the mission execution, the CPT successfully accomplished the MOPs that correspond with MOE 2. The output in the Recommendations and Mitigations does not have to contain any specific information in this case. Provide suggestions on improving the CPT’s process however. For example, MBSA was used to scan hosts in the network, but it is a slightly deprecated utility. In addition, notice that the version of Kibana that the CPT is using is rather outdated.
+The CPT successfully achieved their MOPs and in turn their MOEs. Some recommendations are that the CPT used an outdated version of Kibana (6.7.2) while the most recent version is 7.12, which came with major updates. In addition, Microsoft Baseline Security Analyser (MBSA) was used to check a workstation. MBSA is a deprecated tool. The team should update their toolkit for the next mission.
+6.	Add a section at the top for the Assessment Summary. Restate the mission from the scenario. The CPT conducts proactive Defensive Cyber Operations (DCO) and incident response in support of counter-APT28 operations throughout SACOM networks in order to prevent enemy forces from gaining a foothold in critical SACOM systems.
+7.	Add the MOEs. Typically, all the MOEs are addressed here, but for the purposes of this lesson, address only one MOE.
+The objective was to ensure no compromises associated with APT28 TTPs within SACOM networks.
+8.	State whether the CPT was successful. If the CPT was unsuccessful, address the MOE that was not met, and the MOPs that resulted in its failure. In this case, the CPT succeeded with their MOPs.
+The CPT was successful in their mission. The CPT prevented APT28 from establishing a foothold in SACOM networks.
+NOTE: If the CPT was unsuccessful, include a similar failure statement:
+The CPT was unsuccessful in their mission as a result of being unable to eradicate all MCAs from SACOM networks.
+9.	State any pressing recommendations or mitigations. In this case, the CPT was successful so having no major mitigative measures is sufficient.
+No pressing recommendations to report.
+NOTE: If additional mitigative measures were required, include a similar statement:
+The CPT was unable to eradicate MCA due to a lack of detection capability within SACOM networks. The CPT proposes additional network sensors to the local defender, and additional training to CDAs to learn more effective detection methodologies for follow-on mission success.
+10.	Add references to the report. In this scenario, the mission support documents provided are the OPORD and the APT28 Threat Intelligence Report.
+11.	Complete the report by adding POC information. Use the Completed Sample Report to check the work.
+ 
+APPENDIX C REFERENCES
+
+The following resources were referenced during the creation of this lesson.
+•	Sqrrl — A Framework for Cyber Threat Hunting: https://docplayer.net/55373115-White- paper-a-framework-for-cyber-threat-hunting.html
+•	Sqrrl's Hunt Evil: Your Practical Guide to Threat Hunting publication - https://www.threathunting.net/files/hunt-evil-practical-guide-threat-hunting.pdf
+•	Sqrrl’s Threat Hunting Reference Model Part 2 - The Hunting Loop publication - https://www.threathunting.net/files/The Threat Hunting Reference Model Part 2_ The Hunting Loop _ Sqrrl.pdf
+•	MITRE ATT&CK Brute Force technique - https://attack.mitre.org/techniques/T1110/
+•	MITRE ATT&CK Password Guessing sub-technique - https://attack.mitre.org/techniques/T1110/001/
+•	MITRE ATT&CK Password Spraying sub-technique - https://attack.mitre.org/techniques/T1110/003/
+•	FireEye — An In-Depth Look Into Data Stacking: https://www.fireeye.com/blog/threat- research/2012/11/indepth-data-stacking.html
