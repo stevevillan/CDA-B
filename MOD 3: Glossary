@@ -1,0 +1,82 @@
+Glossary/Acronyms
+Word/Acronym	Definition/Meaning
+AC	Access Control
+ACAS	Assured Compliance Assessment Solution
+ACC	Accounting
+AD	Active Directory
+APT	Advanced Persistent Threat
+AT	Awareness and Training
+ATT&CK	Adversarial Tactics, Techniques, and Common Knowledge
+AU	Audit and Accountability
+CA	Assessment, Authorization, and Monitoring
+CDA	Cyber Defense Analyst
+CM	Configuration Management
+COP	Common Operating Picture
+CP	Contingency Planning
+CPT	Cyber Protection Team
+CSSP	CyberSecurity Service Providers
+CWP	Cyber Warfare Publication
+DCO	Defensive Cyberspace Operation
+DC	Domain Controller
+DISA	Defense Information Systems Agency
+DMSS	Deployable Mission Support System
+DMZ	Demilitarized Zone
+DNAT	Destination Network Address Translation
+DNS	Domain Name System
+DoD	Department of Defense
+DoDIN	Department of Defense Information Network
+DoDIN AO	Department of Defense Area of Operation
+FIPS	Federal Information Processing Standard
+FISMA	Federal Information Systems Management Act
+FOUO	For Official Use Only
+GPO	Group Policy Object
+HR	Human Resources
+IA	Identification and Authentication
+ICMP	Internet Control Message Protocol
+IDS	Intrusion Detection System
+IIS	Internet Information Service
+IP	Internet Protocol
+IR	Incident Response
+KT-C	Key Terrain in Cyberspace
+LAN	Local Area Network
+MA	Maintenance
+MMC	Microsoft Management Console
+MP	Media Protection
+MRT-C	Mission Relevant Terrain in Cyberspace
+NAT	Network Address Translation
+NIDS	Network Intrusion Detection System
+NIPRNet	Non-classified Internet Protocol Router Network
+NIPS	Network Intrusion Prevention System
+NIST	National Institute of Standards and Technology
+NSA	National Security Agency
+NSM	Network Security Monitor
+Open VAS	Open Vulnerability Assessment System
+OS	Operating System
+PE	Physical and Environmental Protection
+PL	Planning
+PM	Program Management
+PS	Personnel Security
+PT	PII Processing and Transparency
+RA	Risk Assessment
+RMP	Risk Mitigation Plan
+ROCK NSM	Response Operation Collection Kit Network Security Monitor
+SA	System and Services Acquisition
+SC	System and Communications Protection
+SI	System and Information Integrity
+SIEM	Security Information and Event Management
+SIPRNet	Secret Internet Protocol Router Network
+SNMP	Simple Network Management Protocol
+SP	Special Publication
+SQL	Structured Query Language
+SR	Supply Chain Risk Management
+SSH	Secure Shell
+STIG	Security Technical Implementation Guide
+SYSLOG	System Log
+SYSTEMD	System Daemon
+TCP	Transmission Control Protocol
+UDP	User Datagram Protocol
+UI	User Interface
+VM	Virtual Machine
+VyOS	Vyatta Operating System
+WMI	Windows Management Instrumentation
+WMIC	WMI Command-Line
