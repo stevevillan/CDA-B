@@ -1,0 +1,115 @@
+Glossary/Acronyms
+Word/Acronym	Definition/Meaning
+ACK	Acknowledgment
+ACL	Access Control List
+API	Application Programming Interfaces
+APIPA	Automatic Private IP Addressing
+ARP	Address Resolution Protocol
+ATT&CK	Adversarial Tactics, Techniques, and Common Knowledge
+BSD	Berkeley Software Distribution
+BSS	Block Started by Symbol
+CAM	Content Addressable Memory
+CDA	Cyber Defense Analyst
+CDP	Cisco Discovery Protocol
+CIDR	Classless Inter-Domain Routing
+CLI	Command Line Interface
+CM	Content Module
+COF	Cyberspace Operations Force
+CPL	Control Panel Items
+CPT	Cyber Protection Team
+CPU	Central Processing Unit
+DACL	Discretionary Access Control List
+DHCP	Dynamic Host Configuration Protocol
+DLL	Dynamic-link Libraries
+DMAC	Destination Media Access Control
+DNS	Domain Name System
+DoD	Department of Defense
+DOS	Disk Operating System
+ELO	Enabling Learning Objective
+EXE	Executable
+EXIF	Exchangeable Image File Format
+EXT	Extended Filesystem
+FAT	File Allocation Table
+FCS	Frame Check Sequence
+GUID	Globally Unique Identifier
+HAL	Hardware Abstraction Layer
+HKCU	HKEY_CURRENT_USER
+HKLM	HKEY_LOCAL_MACHINE
+HKU	HKEY_USERS
+HTTP	Hypertext Transfer Protocol
+HTTPS	Hypertext Transfer Protocol Secure
+I/O	Input/Output
+IANA	Internet Assigned Numbers Authority
+ICMP	Internet Control Message Protocol
+ID	Identifier
+IEEE	Institute of Electrical and Electronics Engineers
+IETF	Internet Engineering Task Force
+INIT	Initialization
+INODE	Index Node
+IOC	Indicators of Compromise
+IOS	Internetwork Operating System
+IP	Internet Protocol
+IPSEC	IP Security
+IPv4	Internet Protocol version 4
+IPv6	Internet Protocol version 6
+ISE	Integrated Scripting Environment
+ISP	Internet Service Provider
+ITIL	Information Technology Infrastructure Library
+JCOF	Joint Cyberspace Operations Force
+LAN	Local Area Network
+MAC	Media Access Control
+MCA	Malicious Cyberspace Activity
+MD	Message Digest
+MEM	Memory
+MFT	Master File Table
+MIME	Multipurpose Internet Mail Extensions
+NAT	Network Address Translation
+NC	Netcat
+NIC	Network Interface Controller
+NTFS	New Technology File System
+NTP	Network Time Protocol
+OS	Operating System
+OSI	Open Systems Interconnection
+OSPF	Open Shortest Path First
+PAT	Port Address Translation
+PCAP	Packet Capture
+PCTE	Persistent Cyber Training Environment
+PE	Portable Executable
+PID	Process Identifier
+PPID	Parent Process Identifier
+PPP	Point to Point Protocol
+PVST+	Per VLAN Spanning Tree+
+RDP	Remote Desktop Protocol
+ReFS	Resilient File System
+RF	Radio Frequency
+RIP	Routing Information Protocol
+RIR	Regional Internet Registry
+RPC	Remote Procedure Calls
+SACL	System Access Control List
+SANS	SysAdmin, Audit, Network, and Security
+SCE	Structure Content Event
+SCP	Structured Content Plan
+SHA	Secure Hash Algorithm
+SMAC	Source Media Access Control
+SS	Socket Statistics
+SSH	Secure Shell
+SSL	Secure Sockets Layer
+STP	Spanning Tree Protocol
+SYS	System
+SYSCALL	System Call
+TCP	Transport Control Protocol
+TLS	Transport Layer Security
+TTL	Time to Live
+UDP	User Datagram Protocol
+UID	User ID
+URL	Uniform Resource Locator
+USCYBERCOM	United States Cyber Command
+VFS	Virtual Filesystem
+VLAN	Virtual Local Area Network
+VM	Virtual Machine
+WAP	Wireless Access Point
+Wi-Fi	Wireless Fidelity
+WSL	Windows Subsystem for Linux
+XML	Extensible Markup Language
+YAML	YAML Ain't Markup Language/Yet Another Markup Language
+ZSH	Z Shell
